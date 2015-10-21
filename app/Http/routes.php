@@ -30,5 +30,6 @@ Route::group([/*'prefix' => 'admin', */'namespace' => 'Diseaseadmin', 'middlewar
     Route::controller('clinical', 'ClinicalController'); //疾病记录
     Route::controller('menu', 'MenuController'); //菜单
     Route::controller('admin', 'AdminController'); //后台用户首页
+    Route::get('log', 'LogviewController@index'); //后台用户首页
 
 });

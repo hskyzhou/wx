@@ -95,7 +95,7 @@ return [
     |
     */
 
-    'log' => 'single',
+    'log' => 'daily',
 
     /*
     |--------------------------------------------------------------------------
@@ -150,7 +150,7 @@ return [
          */
         Bican\Roles\RolesServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
-
+        Arcanedev\LogViewer\LogViewerServiceProvider::class,//记录日志
 
         /*
          * Custom Party Service Provider
