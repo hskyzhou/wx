@@ -89,5 +89,30 @@ class MenusTableSeeder extends Seeder
         $adminPage->description = "显示用户个人后台首页";
         $adminPage->url = "admin/index";
         $adminPage->save();
+
+        /*个人首页*/
+        $logManage = new Menu;
+        $logManage->name = "日志管理";
+        $logManage->parent_id = 0;
+        $logManage->slug = "show.log.manage";
+        $logManage->description = "显示日志管理列表";
+        $logManage->url = "log";
+        $logManage->save();
+
+        $logOverall = new Menu;
+        $logOverall->name = "日志总览";
+        $logOverall->parent_id = $logManage->id;
+        $logOverall->slug = "show.log.all";
+        $logOverall->description = "显示日志总览";
+        $logOverall->url = "log/log-viewer";
+        $logOverall->save();
+
+        $logList = new Menu;
+        $logList->name = "日志列表";
+        $logList->parent_id = $logManage->id;
+        $logList->slug = "show.log.list";
+        $logList->description = "显示日志列表";
+        $logList->url = "log/log-viewer/logs";
+        $logList->save();
     }
 }

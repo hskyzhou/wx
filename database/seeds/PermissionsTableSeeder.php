@@ -141,5 +141,24 @@ class PermissionsTableSeeder extends Seeder
             'slug' => 'show.admin.page',
             'description' => '显示后台用户的个人首页', // optional
         ]);
+
+        /*日志*/
+        $logManage = Permission::create([
+            'name' => 'Show Log Manage',
+            'slug' => 'show.log.manage',
+            'description' => '显示日志管理', // optional
+        ]);
+
+        $logList = Permission::create([
+            'name' => 'Show Log All',
+            'slug' => 'show.log.all',
+            'description' => '显示日志总览', // optional
+        ]);
+
+        $logList = Permission::create([
+            'name' => 'Show Log List',
+            'slug' => 'show.log.list',
+            'description' => '显示日志列表', // optional
+        ]);
     }
 }
