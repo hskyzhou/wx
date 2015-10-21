@@ -175,12 +175,13 @@
 @stop
 
 @section('js')
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/locale/{{ trans()->getLocale() }}.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/js/bootstrap-datetimepicker.min.js"></script>
+    @parent
+    <script type="text/javascript" src="{{asset('components/moment/min/moment.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('components/moment/locale/en-au.js')}}"></script>
+    <script type="text/javascript" src="{{asset('components/Chart.js/Chart.min.js')}}"></script>
+    
+    <script type="text/javascript" src="{{asset('components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')}}"></script>
+
     <script>
         Chart.defaults.global.responsive      = true;
         Chart.defaults.global.scaleFontFamily = "'Source Sans Pro'";
