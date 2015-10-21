@@ -72,7 +72,7 @@
 			            	<li><a href="/admin"><i class="fa fa-dashboard"></i>用户后台主页</a></li>
 			            	@forelse($breadcrumbs as $breadcrumb)
 			            		@if($breadcrumb['click'])
-			            			<li><a href="{{$breadcrumb['url']}}"><i class="fa fa-dashboard"></i>{{$breadcrumb['value']}}</a></li>
+			            			<li><a href="{{url($breadcrumb['url'])}}"><i class="fa fa-dashboard"></i>{{$breadcrumb['value']}}</a></li>
 			            		@else
 			            			<li class="active">{{$breadcrumb['value']}}</li>
 			            		@endif

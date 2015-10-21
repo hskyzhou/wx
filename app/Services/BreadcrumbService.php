@@ -29,7 +29,7 @@
 				$selected_menu = $menu->first();
 
 				/*设置breadcrumbs*/
-				$click = ($selected_menu->url == '#' || $selected_menu->url == '') ? true : false;
+				$click = ($selected_menu->url != '#' && $selected_menu->url != '') ? true : false;
 
 				array_unshift($breadcrumbs, [
 					'value' => $selected_menu->name,
