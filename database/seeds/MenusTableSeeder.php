@@ -90,7 +90,7 @@ class MenusTableSeeder extends Seeder
         $adminPage->url = "admin/index";
         $adminPage->save();
 
-        /*个人首页*/
+        /*日志管理*/
         $logManage = new Menu;
         $logManage->name = "日志管理";
         $logManage->parent_id = 0;
