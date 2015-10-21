@@ -28,13 +28,13 @@ class BeforeAdminMiddleware
      */
     public function handle($request, Closure $next)
     {
+        /*获取当前用户左侧菜单*/
         $user_menus = $this->menuCon->getUserMenu();
 
+        /*获取面包屑导航*/
         $breadcrumbs = $this->breadcrumbCon->getCurrentBreadcrumb();
-        $activemenus = $this->breadcrumbCon->getCurrentActiveMenu();
         
         view()->share('breadcrumbs', $breadcrumbs);
-        view()->share('activemenus', $activemenus);
 
         view()->share('menus', $user_menus);
 

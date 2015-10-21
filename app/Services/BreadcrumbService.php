@@ -39,39 +39,7 @@
 
 				$menu = $selected_menu->parentmenu();
 			}
-
+			
 			return $breadcrumbs;
-
 		}
-
-		/**
-		 * 获取后台当前激活的菜单
-		 * 
-		 * @param		
-		 * 
-		 * @author		wen.zhou@bioon.com
-		 * 
-		 * @date		2015-10-21 09:01:25
-		 * 
-		 * @return		
-		 */
-		public function getCurrentActiveMenu(){
-			$currentPath = request()->path();
-
-			/*获取菜单条件*/
-			$menu = Menu::where('url', '=', $currentPath);
-
-			$activeMenus = [];
-
-			while(!$menu->get()->isEmpty()){
-				$selected_menu = $menu->first();
-
-				$activeMenus[] = $selected_menu->id;
-				
-				$menu = $selected_menu->parentmenu();
-			}
-
-			return $activeMenus;
-		}
-		
 	}

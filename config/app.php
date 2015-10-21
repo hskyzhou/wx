@@ -151,6 +151,7 @@ return [
         Bican\Roles\RolesServiceProvider::class,
         Barryvdh\Debugbar\ServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,//记录日志
+        HieuLe\Active\ActiveServiceProvider::class, //Active类
 
         /*
          * Custom Party Service Provider
@@ -211,6 +212,7 @@ return [
          * third party 
          */
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
+        'Active' => HieuLe\Active\Facades\Active::class,
 
     ],
 

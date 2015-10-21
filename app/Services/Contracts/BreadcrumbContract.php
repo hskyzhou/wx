@@ -3,6 +3,4 @@
 
 	interface BreadcrumbContract{
 		public function getCurrentBreadcrumb();
-
-		public function getCurrentActiveMenu();
 	}
