@@ -29,7 +29,6 @@ class Kernel extends HttpKernel
         'auth' => \App\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-
         /*Bican/Role  middleware*/
         'role' => \Bican\Roles\Middleware\VerifyRole::class,
         'permission' => \Bican\Roles\Middleware\VerifyPermission::class,
@@ -37,6 +36,5 @@ class Kernel extends HttpKernel
 
         'before.menu' => \App\Http\Middleware\BeforeAdminMiddleware::class,
         'after.auth' => \App\Http\Middleware\AfterAuthMiddleware::class,
-        ''
     ];
 }
