@@ -18,7 +18,7 @@
 		  		@if(isset($menu['son']))
 			    	@foreach($menu['son'] as $sub_menu)
 			    		@if(isset($activemenus) && in_array($sub_menu['id'], $activemenus)) 
-			    			<li claas="active">
+			    			<li class="active">
 			    		@else 
 			    			<li>
 			    		@endif
