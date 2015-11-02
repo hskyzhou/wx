@@ -11,8 +11,6 @@ use App\Menu;
 use Bican\Roles\Models\role;
 use Bican\Roles\Models\permission;
 
-use Debugbar;
-
 use Auth;
 
 use App\Services\Contracts\PermissionContract;
@@ -85,7 +83,6 @@ class UserController extends Controller
         $search = request('sSearch', '');
 
         $current_user = Auth::user();
-        Debugbar::info(request()->all());
         /*设置搜索条件*/
         $user = new User;
 

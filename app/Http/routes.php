@@ -25,11 +25,7 @@ Route::group([/*'prefix' => 'admin', */'namespace' => 'Diseaseadmin', 'middlewar
     Route::controller('role', 'RoleController');  //角色
     Route::controller('permission', 'PermissionController'); //权限
     Route::controller('user', 'UserController');  // 用户
-    Route::controller('disease', 'DiseaseController'); //疾病分类
-    Route::controller('biomarker', 'BiomarkerController'); //bioonmarker
-    Route::controller('clinical', 'ClinicalController'); //疾病记录
     Route::controller('menu', 'MenuController'); //菜单
     Route::controller('admin', 'AdminController'); //后台用户首页
     Route::get('log', 'LogviewController@index'); //后台用户首页
-
 });

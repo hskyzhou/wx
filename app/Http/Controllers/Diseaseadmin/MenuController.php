@@ -13,8 +13,6 @@ use Bican\Roles\Models\Permission;
 
 use App\Services\Contracts\MenuContract;
 
-use Debugbar;
-
 use Auth;
 /**
  * 菜单管理
@@ -81,7 +79,6 @@ class MenuController extends Controller
     	$start = request('iDisplayStart', 0);
     	$search = request('sSearch', '');
 
-    	Debugbar::info(request()->all());
         /*设置搜索条件*/
         $menu = new Menu;
         /*获取总量*/

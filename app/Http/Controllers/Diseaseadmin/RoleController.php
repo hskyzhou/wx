@@ -12,8 +12,6 @@ use Bican\Roles\Models\Permission;
 
 use App\Services\Contracts\PermissionContract;
 
-use Debugbar;
-
 use Auth;
 /**
  * 角色管理类
@@ -87,7 +85,6 @@ class RoleController extends Controller
         $start = request('iDisplayStart', 0);
         $search = request('sSearch', '');
 
-        Debugbar::info(request()->all());
         /*设置角色条件*/
         $role = new Role;
         /*获取角色总量*/
