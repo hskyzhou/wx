@@ -204,12 +204,12 @@ class RoleController extends Controller
 
                 /*修改成功*/
                 if($update_bool){
+                    /*角色删除权限*/
+                    $role->detachAllPermissions();
+                    
                     /*获取修改的权限*/
                     $update_permissions = request('permission');
                     if(!empty($update_permissions)){
-                        /*角色删除权限*/
-                        $role->detachAllPermissions();
-
                         /*角色添加权限*/
                         $arr_permissions = explode(',', $update_permissions);
                         $permissions = Permission::whereIn('slug', $arr_permissions)->get();
