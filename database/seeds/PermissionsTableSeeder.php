@@ -16,115 +16,115 @@ class PermissionsTableSeeder extends Seeder
 		/*菜单*/
         $menuManage = Permission::create([
             'name' => 'Show Menus Manage',
-            'slug' => 'show.menu.manage',
+            'slug' => 'admin.menus.manage',
             'description' => '显示菜单管理', // optional
         ]);
 
         $menuList = Permission::create([
             'name' => 'Show Menus List',
-            'slug' => 'show.menu.list',
+            'slug' => 'admin.menus.list',
             'description' => '显示菜单列表', // optional
         ]);
         $menuUpdate = Permission::create([
             'name' => 'Update Menus',
-            'slug' => 'update.menus',
+            'slug' => 'admin.menus.update',
             'description' => '修改菜单', // optional
         ]);
         $menuAdd = Permission::create([
             'name' => 'Add Menus',
-            'slug' => 'add.menus',
+            'slug' => 'admin.menus.add',
             'description' => '添加菜单', // optional
         ]);
         $menuDelete = Permission::create([
             'name' => 'Delete Menus',
-            'slug' => 'delete.menus',
+            'slug' => 'admin.menus.delete',
             'description' => '删除菜单', // optional
         ]);
 
         /*角色*/
         $roleManage = Permission::create([
             'name' => 'Show Roles Manage',
-            'slug' => 'show.role.manage',
+            'slug' => 'admin.roles.manage',
             'description' => '显示角色管理', // optional
         ]);
 
         $roleList = Permission::create([
             'name' => 'Show Roles List',
-            'slug' => 'show.role.list',
+            'slug' => 'admin.roles.list',
             'description' => '显示角色列表', // optional
         ]);
 
         $roleUpdate = Permission::create([
             'name' => 'Update Roles',
-            'slug' => 'update.roles',
+            'slug' => 'admin.roles.update',
             'description' => '修改角色', // optional
         ]);
         $roleAdd = Permission::create([
             'name' => 'Add Roles',
-            'slug' => 'add.roles',
+            'slug' => 'admin.roles.add',
             'description' => '添加角色', // optional
         ]);
         $roleDelete = Permission::create([
             'name' => 'Delete Roles',
-            'slug' => 'delete.roles',
+            'slug' => 'admin.roles.delete',
             'description' => '删除角色', // optional
         ]);
 
         /*权限*/
         $permissionManage = Permission::create([
             'name' => 'Show Permissions Manage',
-            'slug' => 'show.permission.manage',
+            'slug' => 'admin.permissions.manage',
             'description' => '显示权限管理', // optional
         ]);
 
         $permissionList = Permission::create([
             'name' => 'Show Permissions List',
-            'slug' => 'show.permission.list',
+            'slug' => 'admin.permissions.list',
             'description' => '显示权限列表', // optional
         ]);
 
         $permissionUpdate = Permission::create([
             'name' => 'Update Permissions',
-            'slug' => 'update.permissions',
+            'slug' => 'admin.permissions.update',
             'description' => '修改权限', // optional
         ]);
         $permissionAdd = Permission::create([
             'name' => 'Add Permissions',
-            'slug' => 'add.permissions',
+            'slug' => 'admin.permissions.add',
             'description' => '添加权限', // optional
         ]);
         $permissionDelete = Permission::create([
             'name' => 'Delete Permissions',
-            'slug' => 'delete.permissions',
+            'slug' => 'admin.permissions.delete',
             'description' => '删除权限', // optional
         ]);
 
         /*用户*/
         $userManage = Permission::create([
             'name' => 'Show Users Manage',
-            'slug' => 'show.user.manage',
+            'slug' => 'admin.users.manage',
             'description' => '显示用户管理', // optional
         ]);
 
         $userList = Permission::create([
             'name' => 'Show Users List',
-            'slug' => 'show.user.list',
+            'slug' => 'admin.users.list',
             'description' => '显示用户列表', // optional
         ]);
 
         $userUpdate = Permission::create([
             'name' => 'Update Users',
-            'slug' => 'update.users',
+            'slug' => 'admin.users.update',
             'description' => '修改用户', // optional
         ]);
         $userAdd = Permission::create([
             'name' => 'Add Users',
-            'slug' => 'add.users',
+            'slug' => 'admin.users.add',
             'description' => '添加用户', // optional
         ]);
         $userDelete = Permission::create([
             'name' => 'Delete Users',
-            'slug' => 'delete.users',
+            'slug' => 'admin.users.delete',
             'description' => '删除用户', // optional
         ]);
 
@@ -138,26 +138,26 @@ class PermissionsTableSeeder extends Seeder
         /*后台个人首页*/
         $adminUserPage = Permission::create([
             'name' => 'Show Admin Page',
-            'slug' => 'show.admin.page',
+            'slug' => 'admin.page.show',
             'description' => '显示后台用户的个人首页', // optional
         ]);
 
         /*日志*/
         $logManage = Permission::create([
             'name' => 'Show Log Manage',
-            'slug' => 'show.log.manage',
+            'slug' => 'admin.logs.manage',
             'description' => '显示日志管理', // optional
         ]);
 
         $logList = Permission::create([
             'name' => 'Show Log All',
-            'slug' => 'show.log.all',
+            'slug' => 'admin.logs.all',
             'description' => '显示日志总览', // optional
         ]);
 
         $logList = Permission::create([
             'name' => 'Show Log List',
-            'slug' => 'show.log.list',
+            'slug' => 'admin.logs.list',
             'description' => '显示日志列表', // optional
         ]);
     }

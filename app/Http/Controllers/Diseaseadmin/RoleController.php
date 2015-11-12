@@ -30,13 +30,13 @@ class RoleController extends Controller
 	public function __construct(){
         $this->current_user = Auth::user();
 
-        $this->middleware('permission:show.role.manage');
+        $this->middleware('permission:admin.roles.manage');
 
-        $this->middleware('permission:show.role.list', ['only' => ['getInde', 'getShow', 'getRolelist']]);
+        $this->middleware('permission:admin.roles.list', ['only' => ['getInde', 'getShow', 'getRolelist']]);
 
-        $this->middleware('permission:add.roles', ['only' => ['getAdd', 'postAdd']]);
-        $this->middleware('permission:update.roles', ['only' => ['getUpdate', 'postUpdate']]);
-        $this->middleware('permission:delete.roles', ['only' => ['getDelete']]);
+        $this->middleware('permission:admin.roles.add', ['only' => ['getAdd', 'postAdd']]);
+        $this->middleware('permission:admin.roles.update', ['only' => ['getUpdate', 'postUpdate']]);
+        $this->middleware('permission:admin.roles.delete', ['only' => ['getDelete']]);
 	}
     
     public function getIndex(){
@@ -57,7 +57,7 @@ class RoleController extends Controller
     public function getShow(){
         $is_add = false;//添加权限
 
-        if($this->current_user->can('add.roles')){
+        if($this->current_user->can('admin.roles.add')){
             $is_add = true;
         }
 
@@ -103,8 +103,8 @@ class RoleController extends Controller
         $roles = $result_roles->toArray();
 
         foreach($result_roles as $key => $result_role){
-            $roles[$key]['update'] = $this->current_user->can('update.roles');
-            $roles[$key]['delete'] = $this->current_user->can('delete.roles');
+            $roles[$key]['update'] = $this->current_user->can('admin.roles.update');
+            $roles[$key]['delete'] = $this->current_user->can('admin.roles.delete');
         }
 
         $returnData = [

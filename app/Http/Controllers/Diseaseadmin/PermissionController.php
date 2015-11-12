@@ -25,13 +25,13 @@ class PermissionController extends Controller
 	public function __construct(){
         $this->current_user = Auth::user();
 
-        $this->middleware('permission:show.permission.manage');
+        $this->middleware('permission:admin.permissions.manage');
 
-        $this->middleware('permission:show.permission.list', ['only' => ['getIndex', 'getShow', 'getPermissionlist']]);
+        $this->middleware('permission:admin.permissions.list', ['only' => ['getIndex', 'getShow', 'getPermissionlist']]);
 
-        $this->middleware('permission:update.permissions', ['only' => ['getUpdate', 'postUpdate']]);
-        $this->middleware('permission:add.permissions', ['only' => ['getAdd', 'postAdd']]);
-        $this->middleware('permission:delete.permissions', ['only' => ['getDelete']]);
+        $this->middleware('permission:admin.permissions.update', ['only' => ['getUpdate', 'postUpdate']]);
+        $this->middleware('permission:admin.permissions.add', ['only' => ['getAdd', 'postAdd']]);
+        $this->middleware('permission:admin.permissions.delete', ['only' => ['getDelete']]);
 	}
     
     public function getIndex(){
@@ -53,7 +53,7 @@ class PermissionController extends Controller
     public function getShow(){
         $is_add = false;//添加权限
 
-        if($this->current_user->can('add.permissions')){
+        if($this->current_user->can('admin.permissions.add')){
             $is_add = true;
         }
 
@@ -98,8 +98,8 @@ class PermissionController extends Controller
         $permissions = $result_permissions->toArray();
 
         foreach($result_permissions as $key => $result_role){
-            $permissions[$key]['update'] = $this->current_user->can('update.permissions');
-            $permissions[$key]['delete'] = $this->current_user->can('delete.permissions');
+            $permissions[$key]['update'] = $this->current_user->can('admin.permissions.update');
+            $permissions[$key]['delete'] = $this->current_user->can('admin.permissions.delete');
         }
 
         $returnData = [

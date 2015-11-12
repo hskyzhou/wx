@@ -26,11 +26,13 @@ use App\Http\Requests\UserAddUpdateRequest;
 class UserController extends Controller
 {
 	public function __construct(){
-		$this->middleware('permission:update.users', ['only' => ['getUpdate', 'postUpdate']]);
-		$this->middleware('permission:add.users', ['only' => ['getAdd', 'postAdd']]);
-		$this->middleware('permission:delete.users', ['only' => ['getDelete']]);
+        $this->middleware('permission:admin.users.manage');
+		$this->middleware('permission:admin.users.list', ['only' => ['getIndex', 'getShow', 'getUserlist', 'getPermission']]);
 
-		$this->middleware('permission:show.user.list', ['only' => ['getIndex', 'getShow', 'getUserlist', 'getPermission']]);
+        $this->middleware('permission:admin.users.update', ['only' => ['getUpdate', 'postUpdate']]);
+        $this->middleware('permission:admin.users.add', ['only' => ['getAdd', 'postAdd']]);
+        $this->middleware('permission:admin.users.delete', ['only' => ['getDelete']]);
+
 	}
     
     public function getIndex(){
@@ -54,7 +56,7 @@ class UserController extends Controller
 
     	$is_add = false;//添加权限
 
-    	if($current_user->can('add.users')){
+    	if($current_user->can('admin.users.add')){
     		$is_add = true;
     	}
 
@@ -104,19 +106,19 @@ class UserController extends Controller
         /*判断用户是否用删除，修改用户-- 是否显示 修改，删除按钮*/
         foreach($result_users as $key => $result_user){
         	$update = false;
-        	if($current_user->can('update.users')){
+        	if($current_user->can('admin.users.update')){
         		if($result_user->id === $current_user->id){
 	        		$update = true;
 	        	}else{
-	        		if($current_user->allowed('update.users', $result_user, true, 'creator_id')){
+	        		if($current_user->allowed('admin.users.update', $result_user, true, 'creator_id')){
 	        			$update = true;
 	        		}
 	        	}
         	}
 
         	$delete = false;
-        	if($current_user->can('delete.users')){
-	        	if($current_user->allowed('delete.users', $result_user, true, 'creator_id')){
+        	if($current_user->can('admin.users.delete')){
+	        	if($current_user->allowed('admin.users.delete', $result_user, true, 'creator_id')){
 	        		$delete = true;
 	        	}
         	}
@@ -175,7 +177,7 @@ class UserController extends Controller
                 $permissions = $perCon->dealArrayToJsTreeUpdate($deal_permissions, $user_permissions);
 
                 /*是否可以修改此用户数据*/
-                $is_update = $current_user->allowed('update.users', $selected_user, true, 'creator_id');
+                $is_update = $current_user->allowed('admin.users.update', $selected_user, true, 'creator_id');
 
                 /*此用户是否是自己*/
                 $is_owner = $current_user->id === $selected_user->id ? true : false;

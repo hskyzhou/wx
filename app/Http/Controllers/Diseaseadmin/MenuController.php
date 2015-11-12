@@ -27,12 +27,12 @@ class MenuController extends Controller
 
 	public function __construct(){
 	   	$this->current_user = Auth::user();
-        $this->middleware('permission:show.menu.manage');
-        $this->middleware('permission:show.menu.list', ['only' => ['getShow', 'getMenulist']]);
+        $this->middleware('permission:admin.menus.manage');
+        $this->middleware('permission:admin.menus.list', ['only' => ['getShow', 'getMenulist']]);
 
-        $this->middleware('permission:update.menus', ['only' => ['getUpdate', 'postUpdate']]);
-        $this->middleware('permission:add.menus', ['only' => ['getAdd', 'postAdd']]);
-        $this->middleware('permission:delete.menus', ['only' => ['getDelete']]);
+        $this->middleware('permission:admin.menus.update', ['only' => ['getUpdate', 'postUpdate']]);
+        $this->middleware('permission:admin.menus.add', ['only' => ['getAdd', 'postAdd']]);
+        $this->middleware('permission:admin.menus.delete', ['only' => ['getDelete']]);
 	}
 
     public function getIndex(){
@@ -52,7 +52,7 @@ class MenuController extends Controller
     public function getShow(){
         $is_add = false;//添加权限
 
-        if($this->current_user->can('add.menus')){
+        if($this->current_user->can('admin.menus.add')){
             $is_add = true;
         }
 
@@ -97,9 +97,10 @@ class MenuController extends Controller
         /*返回结果菜单集*/
     	$result_menus = collect($deal_menus)->slice($start, $length);//通过collect对象
         $menus = $result_menus->toArray();
+
         foreach($result_menus as $key => $result_menu){
-            $menus[$key]['update'] = $this->current_user->can('update.menus');
-            $menus[$key]['delete'] = $this->current_user->can('delete.menus');
+            $menus[$key]['update'] = $this->current_user->can('admin.menus.update');
+            $menus[$key]['delete'] = $this->current_user->can('admin.menus.delete');
         }
 
     	$returnData = [
