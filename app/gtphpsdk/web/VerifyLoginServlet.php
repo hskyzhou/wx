@@ -3,7 +3,7 @@ namespace App\gtphpsdk\web;
 use App\gtphpsdk\lib\GeetestLib;
 class VerifyLoginServlet{
 
-    public function returnResult()
+    public function returnResult($request)
     {
 
        
@@ -11,7 +11,7 @@ class VerifyLoginServlet{
         //session('gtserver');
         if (session('gtserver') == 1) {
 
-            $result = $GtSdk->validate($_POST['geetest_challenge'], $_POST['geetest_validate'], $_POST['geetest_seccode']);
+            $result = $GtSdk->validate($request->input('geetest_challenge'), $request->input('geetest_validate'), $request->input('geetest_seccode'));
             if ($result == TRUE) {
 
                 return TRUE;
@@ -23,11 +23,11 @@ class VerifyLoginServlet{
                 return FALSE;
             }
         } else {
-            if ($GtSdk->get_answer($_POST['geetest_validate'])) {
+            if ($GtSdk->get_answer($request->input('geetest_validate'))) {
 
                 return TRUE;
             } else {
-                
+
                 return FALSE;
             }
 

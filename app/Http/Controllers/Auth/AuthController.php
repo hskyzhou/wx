@@ -73,7 +73,7 @@ class AuthController extends Controller
         
         //判断验证码
          $verifyLoginServlet = new VerifyLoginServlet;
-         $boolean = $verifyLoginServlet->returnResult();
+         $boolean = $verifyLoginServlet->returnResult($request);
          //验证码错误返回
          if(!$boolean){
 
