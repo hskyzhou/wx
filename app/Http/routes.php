@@ -18,7 +18,7 @@ Route::get('auth/logout', 'Auth\AuthController@getLogout');
 // Registration routes...
 Route::get('auth/register', 'Auth\AuthController@getRegister');
 Route::post('auth/register', 'Auth\AuthController@postRegister');
-
+Route::get('code/getcode','Auth\CodeController@getRefushCode');
 
 /*后台*/
 Route::group([/*'prefix' => 'admin', */'namespace' => 'Diseaseadmin', 'middleware' => ['auth', 'after.auth', 'permission:login.backend', 'before.menu']], function () {
