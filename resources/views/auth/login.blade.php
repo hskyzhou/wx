@@ -7,7 +7,6 @@
 </head>
 <body>
 
-
 <form method="POST" action="/auth/login">
     {!! csrf_field() !!}
 
