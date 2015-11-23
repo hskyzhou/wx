@@ -11,7 +11,7 @@ use App\Menu;
 class AdminController extends Controller
 {
     public function __construct(){
-    	$this->middleware('permission:show.admin.page');
+    	$this->middleware('permission:admin.page.show');
     }
 
     public function getIndex(){
