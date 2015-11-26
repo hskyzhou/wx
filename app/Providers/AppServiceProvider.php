@@ -3,7 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
-
+use App\Services\SpecialService;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('\App\Services\Contracts\SpecialContract', function()
+        {
+            return new \App\Services\SpecialService();
+        });
     }
 }

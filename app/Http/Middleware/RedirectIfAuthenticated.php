@@ -37,7 +37,7 @@ class RedirectIfAuthenticated
         if ($this->auth->check()) {
 
 
-            return redirect('/role/show');
+            return redirect('/');
         }
 
         return $next($request);

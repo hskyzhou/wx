@@ -13,9 +13,9 @@ return [
     |
     | Supported: "null", "sync", "database", "beanstalkd",
     |            "sqs", "iron", "redis"
-    |
+    |默认是同步的，可以选择数据库或者reids
     */
-
+	
     'default' => env('QUEUE_DRIVER', 'sync'),
 
     /*
