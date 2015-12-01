@@ -47,7 +47,7 @@ $(document).ready(function(){
 	            	"bSortable": false,
 	            	"mData": "id", 
 	            	"mRender": function ( data, type, full ) {
-	            		return '<img src="/custom/images/details_open.png">';
+	            		return '<img src="/admin/images/details_open.png">';
 	            	}
 	            },
 	            { "mData": "name" },
@@ -88,13 +88,13 @@ $(document).ready(function(){
         if ( oTable.fnIsOpen(nTr) )
         {
             /* This row is already open - close it */
-            this.src = "/custom/images/details_open.png";
+            this.src = "/admin/images/details_open.png";
             oTable.fnClose( nTr );
         }
         else
         {
             /* Open this row */
-            this.src = "/custom/images/details_close.png";
+            this.src = "/admin/images/details_close.png";
             oTable.fnOpen( nTr, fnFormatDetails(oTable, nTr), 'details' );
         }
     } );

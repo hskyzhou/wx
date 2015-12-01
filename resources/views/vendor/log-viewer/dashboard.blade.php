@@ -118,11 +118,11 @@
 
 @section('js')
     @parent
-    <script type="text/javascript" src="{{asset('components/moment/min/moment.min.js')}}"></script>
-    <script type="text/javascript" src="{{asset('components/moment/locale/en-au.js')}}"></script>
-    <script type="text/javascript" src="{{asset('components/Chart.js/Chart.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('admin/vendor/moment/min/moment.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('admin/vendor/moment/locale/en-au.js')}}"></script>
+    <script type="text/javascript" src="{{asset('admin/vendor/Chart.js/Chart.min.js')}}"></script>
     
-    <script type="text/javascript" src="{{asset('components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')}}"></script>
+    <script type="text/javascript" src="{{asset('admin/vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js')}}"></script>
 
     <script>
         Chart.defaults.global.responsive      = true;

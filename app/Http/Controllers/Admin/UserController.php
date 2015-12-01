@@ -263,10 +263,10 @@ class UserController extends Controller
                     }
 
                     $returnData['status'] = true;
-                    $returnData['msg'] = "角色修改成功";
+                    $returnData['msg'] = "用户修改成功";
                 }else{
                     $returnData['status'] = false;
-                    $returnData['msg'] = '角色修改失败';
+                    $returnData['msg'] = '用户修改失败';
                 }
             }else{
                 $returnData['status'] = false;

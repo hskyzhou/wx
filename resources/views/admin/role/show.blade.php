@@ -1,9 +1,9 @@
 @extends('admin.layout')
 
 @section('customer_css')
-	<link rel="stylesheet" href="{{asset('plugins/select2/select2.css')}}">
-	<link rel="stylesheet" href="{{asset('plugins/datatables/dataTables.bootstrap.css')}}">
-	<link rel="stylesheet" type="text/css" href="{{asset('plugins/jstree/dist/themes/default/style.min.css')}}"/>
+	<link rel="stylesheet" href="{{asset('admin/vendor/select2/select2.css')}}">
+	<link rel="stylesheet" href="{{asset('admin/vendor/datatables/dataTables.bootstrap.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{asset('admin/vendor/jstree/dist/themes/default/style.min.css')}}"/>
 	@parent
 @endsection
 
@@ -52,14 +52,14 @@
 @section('js')
 	@parent
 	<!-- Select2 -->
-    <script src="{{asset('plugins/select2/select2.full.min.js')}}"></script>
+    <script src="{{asset('admin/vendor/select2/select2.full.min.js')}}"></script>
 	<!-- DataTables -->
-    <script src="{{asset('plugins/datatables/jquery.dataTables.min.js')}}"></script>
-    <script src="{{asset('plugins/datatables/dataTables.bootstrap.min.js')}}"></script>
+    <script src="{{asset('admin/vendor/datatables/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('admin/vendor/datatables/dataTables.bootstrap.min.js')}}"></script>
 	
-	<script src="{{asset('layer/layer.js')}}"></script>
-	<script src="{{asset('custom/role.js')}}"></script>
+	<script src="{{asset('admin/vendor/layer/layer.js')}}"></script>
+	<script src="{{asset('admin/js/role.js')}}"></script>
 
 
-	<script src="{{asset('plugins/jstree/dist/jstree.min.js')}}"></script>
+	<script src="{{asset('admin/vendor/jstree/dist/jstree.min.js')}}"></script>
 @endsection

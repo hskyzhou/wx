@@ -9,19 +9,19 @@
 		
 		@section('common_css')
 			<!-- Bootstrap 3.3.5 -->
-			<link rel="stylesheet" href="{{asset('bootstrap/css/bootstrap.min.css')}}">
+			<link rel="stylesheet" href="{{asset('admin/vendor/bootstrap/css/bootstrap.min.css')}}">
 			<!-- Font Awesome -->
-			<link rel="stylesheet" href="{{asset('awesome/font-awesome.min.css')}}">
+			<link rel="stylesheet" href="{{asset('admin/vendor/awesome/font-awesome.min.css')}}">
 			<!-- Ionicons -->
-			<link rel="stylesheet" href="{{asset('ionicons/ionicons.min.css')}}">
+			<link rel="stylesheet" href="{{asset('admin/vendor/ionicons/ionicons.min.css')}}">
 		@show
 		@section('customer_css')
 			
 			<!-- Theme style -->
-			<link rel="stylesheet" href="{{asset('dist/css/AdminLTE.min.css')}}">
+			<link rel="stylesheet" href="{{asset('admin/vendor/dist/css/AdminLTE.min.css')}}">
 			<!-- AdminLTE Skins. Choose a skin from the css/skins
 			     folder instead of downloading all of them to reduce the load. -->
-			<link rel="stylesheet" href="{{asset('dist/css/skins/_all-skins.min.css')}}">
+			<link rel="stylesheet" href="{{asset('admin/vendor/dist/css/skins/_all-skins.min.css')}}">
 
 			<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 			<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -318,24 +318,24 @@
 		
 		@section('js')
 		    <!-- jQuery 2.1.4 -->
-		    <script src="{{asset('plugins/jQuery/jQuery-2.1.4.min.js')}}"></script>
+		    <script src="{{asset('admin/vendor/jQuery/jQuery-2.1.4.min.js')}}"></script>
 		    {{-- // <script src="{{asset('jquery/jquery.1.11.2.min.js')}}"></script> --}}
 		    <!-- jQuery UI 1.11.4 -->
-		    <script src="{{asset('jqueryui/jquery-ui.min.js')}}"></script>
+		    <script src="{{asset('admin/vendor/jQueryUI/jquery-ui.min.js')}}"></script>
 		    <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 		    <script>
 		      $.widget.bridge('uibutton', $.ui.button);
 		    </script>
 		    <!-- Bootstrap 3.3.5 -->
-		    <script src="{{asset('bootstrap/js/bootstrap.min.js')}}"></script>
+		    <script src="{{asset('admin/vendor/bootstrap/js/bootstrap.min.js')}}"></script>
 		    <!-- Sparkline -->
-		    <script src="{{asset('plugins/sparkline/jquery.sparkline.min.js')}}"></script>
+		    <script src="{{asset('admin/vendor/sparkline/jquery.sparkline.min.js')}}"></script>
 		    <!-- Slimscroll -->
-		    <script src="{{asset('plugins/slimScroll/jquery.slimscroll.min.js')}}"></script>
+		    <script src="{{asset('admin/vendor/slimScroll/jquery.slimscroll.min.js')}}"></script>
 		    <!-- FastClick -->
-		    <script src="{{asset('plugins/fastclick/fastclick.min.js')}}"></script>
+		    <script src="{{asset('admin/vendor/fastclick/fastclick.min.js')}}"></script>
 		    <!-- AdminLTE App -->
-		    <script src="{{asset('dist/js/app.min.js')}}"></script>
+		    <script src="{{asset('admin/vendor/dist/js/app.min.js')}}"></script>
 		    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 		    {{-- // <script src="{{asset('dist/js/pages/dashboard.js')}}"></script> --}}
 		    <!-- AdminLTE for demo purposes -->

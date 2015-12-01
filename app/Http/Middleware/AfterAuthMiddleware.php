@@ -20,7 +20,7 @@ class AfterAuthMiddleware
         $current_user = Auth::user();
         
         view()->share('login_name', $current_user->name);
-        view()->share('login_avatar', asset('custom/images/default.jpg'));
+        view()->share('login_avatar', asset('admin/images/default.jpg'));
 
         return $next($request);
     }
