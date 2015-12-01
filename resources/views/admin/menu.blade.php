@@ -1,8 +1,8 @@
 @foreach($menus as $menu)
 	@if(!isset($menu['son']) && empty($menu['son']))
-		<li class="{{Active::pattern($menu['url'] . '/*')}}"><a href="{{url($menu['url'])}}"><i class="fa fa-circle-o text-aqua"></i> <span>{{$menu['name']}}</span></a></li>
+		<li class="{{Active::pattern($menu['url'])}}"><a href="{{url($menu['url'])}}"><i class="fa fa-circle-o text-aqua"></i> <span>{{$menu['name']}}</span></a></li>
 	@else
-		<li class="{{Active::pattern($menu['url'] . '/*')}}">
+		<li class="{{Active::pattern($menu['url'] . '*/*')}}">
 		  	<a href="#">
 		    	<i class="fa fa-dashboard"></i> <span>{{$menu['name']}}</span> <i class="fa fa-angle-left pull-right"></i>
 		  	</a>
