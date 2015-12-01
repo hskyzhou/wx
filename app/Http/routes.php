@@ -21,7 +21,7 @@ Route::post('auth/register', 'Auth\AuthController@postRegister');
 Route::get('code/getcode','Auth\CodeController@getRefushCode');
 
 /*后台*/
-Route::group([/*'prefix' => 'admin', */'namespace' => 'Diseaseadmin', 'middleware' => ['auth', 'after.auth', 'permission:login.backend', 'before.menu']], function () {
+Route::group([/*'prefix' => 'admin', */'namespace' => 'Admin', 'middleware' => ['auth', 'after.auth', 'permission:login.backend', 'before.menu']], function () {
 	Route::get('/', 'AdminController@getIndex');
     Route::controller('role', 'RoleController');  //角色
     Route::controller('permission', 'PermissionController'); //权限
