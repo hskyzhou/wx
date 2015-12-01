@@ -30,16 +30,3 @@ Route::group([/*'prefix' => 'admin', */'namespace' => 'Diseaseadmin', 'middlewar
     Route::controller('admin', 'AdminController'); //后台用户首页
     Route::get('log', 'LogviewController@index'); //后台用户首页
 });
-//注册控制器的路由,加上后台的中间件
-Route::group(['middleware'=>['auth', 'after.auth', 'permission:login.backend', 'before.menu']],function() {
-    //专题管理控制器
-    Route::controller('special', 'SpecialManager\SpecialController'
-        , [
-            'getAddspec' => 'special.addspec',
-            'getSpeciallist'=>'special.speciallist'
-        ]
-    );
-});
-
-
-
