@@ -67,6 +67,21 @@
 		}
 
 		/**
+		 * 获取menu信息  通过 url
+		 * 
+		 * @param		
+		 * 
+		 * @author		wen.zhou@bioon.com
+		 * 
+		 * @date		2016-01-05 13:20:09
+		 * 
+		 * @return		
+		 */
+		public function menuInfoByUrl($url){
+			return Menu::where('url', '=', $url)->first();
+		}
+
+		/**
 		 * 菜单搜索
 		 * 
 		 * @param		

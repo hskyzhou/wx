@@ -3,8 +3,8 @@
 
 	use App\Services\Contracts\BreadcrumbContract;
 
-	use App\Menu;
-
+	use MenuRepository;
+	
 	class BreadcrumbService implements BreadcrumbContract{
 		/**
 		 * 获取后台当前的面包屑导航
@@ -20,20 +20,18 @@
 		public function getCurrentBreadcrumb(){
 			$currentPath = request()->path();
 
-			/*获取菜单条件*/
-			$menu = Menu::where('url', '=', $currentPath);
+			/*获取菜单*/
+			$menu = MenuRepository::menuInfoByUrl($currentPath);
 
 			$breadcrumbs = [];
 
-			while(!$menu->get()->isEmpty()){
-				$selected_menu = $menu->first();
-
+			while(!$menu){
 				/*设置breadcrumbs*/
-				$click = ($selected_menu->url != '#' && $selected_menu->url != '') ? true : false;
+				$click = ($menu->url != '#' && $menu->url != '') ? true : false;
 
 				array_unshift($breadcrumbs, [
-					'value' => $selected_menu->name,
-					'url' => $selected_menu->url,
+					'value' => $menu->name,
+					'url' => $menu->url,
 					'click' => $click,
 				]);
 
