@@ -25,17 +25,19 @@
 
 			$breadcrumbs = [];
 
-			while(!$menu){
-				/*设置breadcrumbs*/
-				$click = ($menu->url != '#' && $menu->url != '') ? true : false;
+			if($menu){
+				while(!$menu){
+					/*设置breadcrumbs*/
+					$click = ($menu->url != '#' && $menu->url != '') ? true : false;
 
-				array_unshift($breadcrumbs, [
-					'value' => $menu->name,
-					'url' => $menu->url,
-					'click' => $click,
-				]);
+					array_unshift($breadcrumbs, [
+						'value' => $menu->name,
+						'url' => $menu->url,
+						'click' => $click,
+					]);
 
-				$menu = $selected_menu->parentmenu();
+					$menu = $selected_menu->parentmenu();
+				}
 			}
 			
 			return $breadcrumbs;
