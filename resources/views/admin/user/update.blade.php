@@ -5,6 +5,7 @@
 	</div>
 	<div class="modal-body">
 		<form class="form-horizontal">
+			{!! csrf_field() !!}
 	    <div class="box-body">
 	    	@if($is_update || $is_owner)
     			{{-- 用户名称 --}}

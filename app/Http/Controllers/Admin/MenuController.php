@@ -6,14 +6,13 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use Route;
-use App\Menu;
+/*服务*/
+use App\Services\Contracts\ButtonContract;
 
-use Bican\Roles\Models\Permission;
+/*仓库*/
+use MenuRepository;
+use PermissionRepository;
 
-use App\Services\Contracts\MenuContract;
-
-use Auth;
 /**
  * 菜单管理
  * 
@@ -22,22 +21,46 @@ use Auth;
  * @date		2015-10-15 16:47:10
  */
 class MenuController extends Controller
-{
+{   
+    /*当前登录用户*/
     protected $current_user;
 
-	public function __construct(){
-	   	$this->current_user = Auth::user();
-        $this->middleware('permission:admin.menus.manage');
-        $this->middleware('permission:admin.menus.list', ['only' => ['getShow', 'getMenulist']]);
+    /*添加菜单*/
+    protected $admin_add_menus;
 
-        $this->middleware('permission:admin.menus.update', ['only' => ['getUpdate', 'postUpdate']]);
-        $this->middleware('permission:admin.menus.add', ['only' => ['getAdd', 'postAdd']]);
-        $this->middleware('permission:admin.menus.delete', ['only' => ['getDelete']]);
+    /*管理菜单*/
+    protected $admin_manage_menus;
+
+    /*查看菜单列表*/
+    protected $admin_list_menus;
+
+    /*修改菜单*/
+    protected $admin_update_menus;
+
+    /*删除菜单*/
+    protected $admin_delete_menus;
+
+	public function __construct(){
+	   	$this->current_user = auth()->user();
+
+        $this->admin_add_menus = config('backend.menu.admin_add_menus');
+        $this->admin_manage_menus = config('backend.menu.admin_manage_menus');
+        $this->admin_list_menus = config('backend.menu.admin_list_menus');
+        $this->admin_update_menus = config('backend.menu.admin_update_menus');
+        $this->admin_delete_menus = config('backend.menu.admin_delete_menus');
+
+        $this->middleware('permission:' . $this->admin_manage_menus);
+        $this->middleware('permission:' . $this->admin_list_menus, ['only' => ['getShow', 'getMenulist']]);
+
+        $this->middleware('permission:' . $this->admin_update_menus, ['only' => ['getUpdate', 'postUpdate']]);
+        $this->middleware('permission:' . $this->admin_add_menus, ['only' => ['getAdd', 'postAdd']]);
+        $this->middleware('permission:' . $this->admin_delete_menus, ['only' => ['getDelete']]);
 	}
 
     public function getIndex(){
         return redirect('menu/show');
     }
+
 	/**
 	 * 显示菜单列表
 	 * 
@@ -49,17 +72,11 @@ class MenuController extends Controller
 	 * 
 	 * @return		
 	 */
-    public function getShow(){
-        $is_add = false;//添加权限
+    public function getShow(ButtonContract $buttonContract){
 
-        if($this->current_user->can('admin.menus.add')){
-            $is_add = true;
-        }
+        $add_button = $buttonContract->createAddModalButton($this->admin_add_menus, route('menu.add.get'), '添加菜单')->getReturnStr();
 
-        $returnData = [
-            'is_add' => $is_add,
-    	];
-    	return view('admin.menu.show')->with($returnData);
+    	return view('admin.menu.show')->with(compact('add_button'));
     }
 
     /**
@@ -73,35 +90,25 @@ class MenuController extends Controller
      * 
      * @return		
      */
-    public function getMenulist(MenuContract $menuCon){
+    public function getMenulist(){
     	$draw = request('sEcho', 1);
     	$length = request('iDisplayLength', 10);
     	$start = request('iDisplayStart', 0);
     	$search = request('sSearch', '');
 
-        /*设置搜索条件*/
-        $menu = new Menu;
-        /*获取总量*/
-    	$count = $menu->count();
+        $data = [
+            'search' => $search,
+            'start' => $start,
+            'length' => $length,
+        ];
+
+        /*获取菜单总量*/
+    	$count = MenuRepository::count();
+        /*获取父类菜单总量*/
+        $filter_count  = MenuRepository::parent_count($data);
         
-        if(!empty($search)){
-            $menu = $menu->where('name', 'like', "%{$search}%");
-        }
-    	// 获取父类菜单的总量
-        $filter_count = $menu->where('parent_id', '=', 0)->count();
-
-        /*获取所有菜单并转化为数组*/
-    	$id_menus = $menu->get()->keyBy('id')->toArray();
-        /*通过menuContract服务处理menu*/
-    	$deal_menus = $menuCon->menuLevelDeal($id_menus);
-        /*返回结果菜单集*/
-    	$result_menus = collect($deal_menus)->slice($start, $length);//通过collect对象
-        $menus = $result_menus->toArray();
-
-        foreach($result_menus as $key => $result_menu){
-            $menus[$key]['update'] = $this->current_user->can('admin.menus.update');
-            $menus[$key]['delete'] = $this->current_user->can('admin.menus.delete');
-        }
+        /*获取 菜单列表*/
+        $menus = MenuRepository::menuList($data);
 
     	$returnData = [
     		"draw" => $draw,
@@ -127,12 +134,14 @@ class MenuController extends Controller
         $id = request('id', 0);
         $returnData = [];
         if(!empty($id)){
-            $menu = Menu::where('id', '=', $id)->first()->toArray();
+            $menu = MenuRepository::menuInfo($id);
+
             if(!empty($menu)){
                 /*权限*/
-                $permissions = Permission::all('name', 'slug', 'description')->toArray();
+                $permissions = PermissionRepository::permissions();
+
                 /*父级菜单*/
-                $menus = Menu::where('parent_id', '=', '0')->get()->toArray();
+                $menus = MenuRepository::parentMenus();
 
                 $returnData['status'] = true;
                 $returnData['msg'] = "获取成功";
@@ -167,26 +176,28 @@ class MenuController extends Controller
     	$id = request('id', '');
     	$returnData = [];
     	if(!empty($id)){
-    		$menu = Menu::where('id', '=', $id)->first();
+    		$menu = MenuRepository::menuInfo($id);
+
     		if(!empty($menu)){
     			// 修改菜单
-		    	$menu->name = request('name', $menu->name);
-		    	$menu->description = request('description', $menu->description);
-		    	$menu->url = request('url', $menu->url);
-		    	$menu->slug = request('slug', $menu->slug);
-		    	$menu->parent_id = request('parent_id', $menu->parent_id);
+                $data = [
+                    'name' => request('name', $menu->name),
+                    'description' => request('description', $menu->description),
+                    'url' => request('url', $menu->url),
+                    'slug' => request('slug', $menu->slug),
+                    'parent_id' => request('parent_id', $menu->parent_id),
+                    'menu_order' => request('menu_order', $menu->menu_order),
+                ];
 
-		    	$update_bool = $menu->save();
+                /*修改菜单*/
+                $upMenuData = MenuRepository::upMenu($menu, $data);
 
-		    	/*修改成功*/
-		    	if($update_bool){
-		    		$returnData = $menu->toArray();
-		    		$returnData['csrftoken'] = csrf_token();
-		    		$returnData['status'] = true;
-		    		$returnData['msg'] = "修改成功";
-		    	}else{
-                    $returnData['status'] = false;
-                    $returnData['msg'] = "修改失败";
+                /*设置返回数据*/
+                $returnData['status'] = $upMenuData['status'];
+                $returnData['msg'] = $upMenuData['msg'];
+
+                if($upMenuData['status']){
+                    $returnData['data'] = $upMenuData['data']->toArray();
                 }
     		}
     	}else{
@@ -210,9 +221,9 @@ class MenuController extends Controller
      */
     public function getAdd(){
         /*权限*/
-        $permissions = Permission::all('name', 'slug', 'description')->toArray();
+        $permissions = PermissionRepository::permissions();
         /*父级菜单*/
-        $menus = Menu::where('parent_id', '=', '0')->get()->toArray();
+        $menus = MenuRepository::parentMenus();
 
         $returnData = [
             'menu_permissions' => $permissions,
@@ -243,22 +254,24 @@ class MenuController extends Controller
     			'csrftoken' => csrf_token()
     		];
     	}else{
-	    	$menu = new Menu;
-	    	$menu->name = request('name', '');
-	    	$menu->description = request('description', '');
-	    	$menu->url = request('url', '');
-	    	$menu->slug = request('slug', '');
-	    	$menu->parent_id = request('parent_id', '');
+            $data = [
+                'name' => request('name', ''),
+                'description' => request('description', ''),
+                'url' => request('url', ''),
+                'slug' => request('slug', ''),
+                'parent_id' => request('parent_id', ''),
+                'menu_order' => request('menu_order', 1),
+            ];
 
-	    	$add_bool = $menu->save();
+            /*添加菜单*/
+            $addMenuData = MenuRepository::addMenu($data);
 
-	    	/*修改成功*/
-	    	if($add_bool){
-	    		$returnData = $menu->toArray();
-	    		$returnData['csrftoken'] = csrf_token();
-	    		$returnData['status'] = true;
-	    		$returnData['msg'] = "添加成功";
-			}
+            if($addMenuData['status']){
+                $returnData = $addMenuData['data']->toArray();
+                $returnData['csrftoken'] = csrf_token();
+                $returnData['status'] = $addMenuData['status'];
+                $returnData['msg'] = "添加成功";
+            }
     	}
 
     	return response()->json($returnData);
@@ -279,8 +292,10 @@ class MenuController extends Controller
     	$id = Request('id', 0);
 
     	if(is_numeric($id) && !empty($id)){
-    		$delete_bool = Menu::destroy($id);
-    		if($delete_bool){
+
+    		$delete_bool = MenuRepository::delMenu($id);
+    		
+            if($delete_bool){
     			$returnData = [
     				'status' => true,
     				'msg' => '删除成功'

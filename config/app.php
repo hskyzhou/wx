@@ -159,6 +159,13 @@ return [
         App\Providers\MenuServiceProvider::class,
         App\Providers\PermissionTreeProvider::class,
         App\Providers\AdminBreadcrumbProvider::class,
+        App\Providers\ComposerServiceProvider::class,
+        App\Providers\ButtonProvider::class,
+
+        App\Providers\Backend\MenuProvider::class,
+        App\Providers\Backend\PermissionProvider::class,
+        App\Providers\Backend\RoleProvider::class,
+        App\Providers\Backend\UserProvider::class,
     ],
 
     /*
@@ -213,6 +220,14 @@ return [
          */
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Active' => HieuLe\Active\Facades\Active::class,
+
+        /**
+         * custom party
+         */
+        'MenuRepository' => App\Facades\Backend\MenuFacade::class,
+        'PermissionRepository' => App\Facades\Backend\PermissionFacade::class,
+        'RoleRepository' => App\Facades\Backend\RoleFacade::class,
+        'UserRepository' => App\Facades\Backend\UserFacade::class,
 
     ],
 

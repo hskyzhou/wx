@@ -35,21 +35,7 @@ $(document).ready(function(){
 	            },
 	            { "mData": "created_at" },
 	            { "mData": "updated_at" },
-	            { 
-	            	"mData": "id",
-	            	"mRender": function ( data, type, full ) {
-	            		var returnStr = '';
-	            		if(full.update){
-	            			returnStr += "<a data-toggle='modal' data-target='#contentmodal' href='/user/update?id="+data+"'>修改 | </a>"
-	            		}
-
-	            		if(full.delete){
-	            			returnStr += "<a class='user_delete' href='/user/delete' data-id="+data+">删除</a>";
-	            		}
-
-	            		return returnStr;
-	            	}
-	           	},
+	            { "mData": "button"},
 	        ],
 	        "aLengthMenu": [
 	        	[5, 10, 15, 20, 50],
@@ -69,8 +55,7 @@ $(document).ready(function(){
 		var password = $update_modal.find('[name="password"]').val();
 		var role = $update_modal.find('[name="role"]').val();
 		var permission = $update_modal.find('[name="permission"]').val();
-		
-		var csrftoken = $("#csrf").find('input[name="csrftoken"]').val();
+		var csrftoken = $update_modal.find('[name="_token"]').val();
 
 		var id = $(this).data('id');
 
@@ -91,19 +76,27 @@ $(document).ready(function(){
 			},
 		})
 		.done(function(data) {
-			$("#csrf").find('input[name="csrftoken"]').val(data.csrftoken);
 			if(data.status){
 				oTable.fnDraw();
 				layer.msg(data.msg);
 			}else{
 				layer.msg(data.msg);
 			}
-		})
-		.fail(function() {
-			layer.msg('修改失败');
-		})
-		.always(function() {
 			$('.modal').modal('hide');
+		})
+		.fail(function(response) {
+			if(response.status == 422){
+				var data = response.responseJSON;
+				var layerStr = "";
+				for(var i in data){
+					layerStr += data[i];
+				}
+				layer.msg(layerStr);
+			}else if(response.status == 401){
+				layer.msg("请重新登录");
+			}else{
+				layer.msg("系统错误，请刷新重试或者记录已存在");
+			}
 		});
     });
 
@@ -116,9 +109,8 @@ $(document).ready(function(){
 		var password = $add_modal.find('[name="password"]').val();
 		var role = $add_modal.find('[name="role"]').val();
 		var permission = $add_modal.find('[name="permission"]').val();
+		var csrftoken = $add_modal.find('[name="_token"]').val();
 		
-		var csrftoken = $("#csrf").find('input[name="csrftoken"]').val();
-
 		$.ajax({
 			url: '/user/add',
 			type: 'POST',
@@ -135,8 +127,6 @@ $(document).ready(function(){
 			},
 		})
 		.done(function(data) {
-			$("#csrf").find('input[name="csrftoken"]').val(data.csrftoken);
-
 			if(data.status){
 				oTable.fnDraw();
 				layer.msg(data.msg);
@@ -146,11 +136,18 @@ $(document).ready(function(){
 
 			$('.modal').modal('hide');
 		})
-		.fail(function(data) {
-			info = data.responseJSON;
-			console.log(data, info);
-			for(i in info){
-				alert(info[i]);
+		.fail(function(response) {
+			if(response.status == 422){
+				var data = response.responseJSON;
+				var layerStr = "";
+				for(var i in data){
+					layerStr += data[i];
+				}
+				layer.msg(layerStr);
+			}else if(response.status == 401){
+				layer.msg("请重新登录");
+			}else{
+				layer.msg("系统错误，请刷新重试或者记录已存在");
 			}
 		});
     });
@@ -160,24 +157,27 @@ $(document).ready(function(){
     	var $this = $(this);
     	var id = $this.data('id');
 
-    	$.ajax({
-    		url: '/user/delete',
-    		type: 'GET',
-    		dataType: 'json',
-    		data: {id: id},
-    	})
-    	.done(function(data) {
-    		if(data.status){
-    			layer.msg(data.msg);
-    			oTable.fnDraw();
-    		}else{
-    			/*没有数据*/
-    			layer.msg(data.msg);
-    		}
-    	})
-    	.fail(function() {
-    		layer.msg('获取失败,请稍后重试');
+    	layer.confirm("您确定要删除吗？", function(){
+    		$.ajax({
+    			url: '/user/delete',
+    			type: 'GET',
+    			dataType: 'json',
+    			data: {id: id},
+    		})
+    		.done(function(data) {
+    			if(data.status){
+    				layer.msg(data.msg);
+    				oTable.fnDraw();
+    			}else{
+    				/*没有数据*/
+    				layer.msg(data.msg);
+    			}
+    		})
+    		.fail(function() {
+    			layer.msg('获取失败,请稍后重试');
+    		});
     	});
+    	
     	
     	return false;
     });

@@ -6,11 +6,15 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
-use Bican\Roles\Models\Permission;
+/*服务*/
+use App\Services\Contracts\ButtonContract;
 
-use Auth;
+/*仓库*/
+use PermissionRepository;
 
-use App\Menu;
+/*Request*/
+use App\Http\Requests\Backend\PermissionRequest;
+
 /**
  * 权限管理类
  * 
@@ -21,17 +25,38 @@ use App\Menu;
 
 class PermissionController extends Controller
 {
+    /*当前用户*/
     protected $current_user;
+
+    /*添加权限*/
+    protected $admin_add_permissions;
+
+    /*管理权限*/
+    protected $admin_manage_permissions;
+
+    /*查看权限列表*/
+    protected $admin_list_permissions;
+
+    /*修改权限*/
+    protected $admin_update_permissions;
+
+    /*删除权限*/
+    protected $admin_delete_permissions;
+
 	public function __construct(){
-        $this->current_user = Auth::user();
+        $this->current_user = auth()->user();
 
-        $this->middleware('permission:admin.permissions.manage');
+        $this->admin_add_permissions = config('backend.permission.admin_add_permissions');
+        $this->admin_manage_permissions = config('backend.permission.admin_manage_permissions');
+        $this->admin_list_permissions = config('backend.permission.admin_list_permissions');
+        $this->admin_update_permissions = config('backend.permission.admin_update_permissions');
+        $this->admin_delete_permissions = config('backend.permission.admin_delete_permissions');
 
-        $this->middleware('permission:admin.permissions.list', ['only' => ['getIndex', 'getShow', 'getPermissionlist']]);
-
-        $this->middleware('permission:admin.permissions.update', ['only' => ['getUpdate', 'postUpdate']]);
-        $this->middleware('permission:admin.permissions.add', ['only' => ['getAdd', 'postAdd']]);
-        $this->middleware('permission:admin.permissions.delete', ['only' => ['getDelete']]);
+        $this->middleware('permission:' . $this->admin_manage_permissions);
+        $this->middleware('permission:' . $this->admin_list_permissions, ['only' => ['getIndex', 'getShow', 'getPermissionlist']]);
+        $this->middleware('permission:' . $this->admin_update_permissions, ['only' => ['getUpdate', 'postUpdate']]);
+        $this->middleware('permission:' . $this->admin_add_permissions, ['only' => ['getAdd', 'postAdd']]);
+        $this->middleware('permission:' . $this->admin_delete_permissions, ['only' => ['getDelete']]);
 	}
     
     public function getIndex(){
@@ -39,7 +64,7 @@ class PermissionController extends Controller
     }
 
     /**
-     * 显示角色列表
+     * 显示权限列表
      * 
      * @param        
      * 
@@ -50,22 +75,16 @@ class PermissionController extends Controller
      * @return        
      */
     
-    public function getShow(){
-        $is_add = false;//添加权限
+    public function getShow(ButtonContract $buttonContract){
+        $add_button = $buttonContract
+                        ->createAddModalButton($this->admin_add_permissions, route('permission.add.get'), '添加权限')
+                        ->getReturnStr();
 
-        if($this->current_user->can('admin.permissions.add')){
-            $is_add = true;
-        }
-
-        $returnData = [
-            'is_add' => $is_add,
-        ];
-
-        return view('admin.permission.show')->with($returnData);
+        return view('admin.permission.show')->with(compact('add_button'));
     }
 
     /**
-     * 获取角色列表
+     * 获取权限列表
      * 
      * @param       
      * 
@@ -81,26 +100,16 @@ class PermissionController extends Controller
         $start = request('iDisplayStart', 0);
         $search = request('sSearch', '');
 
-        /*设置搜索条件*/
-        $permission = new Permission;
-        /*获取权限总量*/
-        $count = $permission->count();
-        if(!empty($search)){
-            $permission = $permission->where('name', 'like', "%{$search}%");
-        }
-        /*设置偏移*/
-        $permission = $permission->offset($start);
-        /*设置limit*/
-        $permission = $permission->limit($length);
-        
-        /*获取权限集*/
-        $result_permissions = $permission->get();
-        $permissions = $result_permissions->toArray();
-
-        foreach($result_permissions as $key => $result_role){
-            $permissions[$key]['update'] = $this->current_user->can('admin.permissions.update');
-            $permissions[$key]['delete'] = $this->current_user->can('admin.permissions.delete');
-        }
+        /*获取数据*/
+        $data = [
+            'search' => $search,
+            'start' => $start,
+            'length' => $length
+        ];
+        /*获取总量*/
+        $count = PermissionRepository::count();
+        /*获取权限列表*/
+        $permissions = PermissionRepository::permissionlist($data);
 
         $returnData = [
             "draw" => $draw,
@@ -127,8 +136,10 @@ class PermissionController extends Controller
         $id = request('id', 0);
 
         $returnData = [];
-        if(is_numeric($id) || empty($id)){
-            $permission = Permission::where('id', '=', $id)->first()->toArray();
+        if(!empty($id)){
+
+            $permission = PermissionRepository::perInfo($id);
+
             if(!empty($permission)){
                 $returnData = [
                     'status' => true,
@@ -161,30 +172,32 @@ class PermissionController extends Controller
      * 
      * @return      
      */
-    public function postUpdate(){
+    public function postUpdate(PermissionRequest $perRequest){
+        $returnData = [];
+
         $id = request('id', '');
-        $returnData = [
-            'csrftoken' => csrf_token()
-        ];
+
         if(!empty($id)){
-            $permission = Permission::where('id', '=', $id)->first();
+            /*获取 权限对象*/
+            $permission = PermissionRepository::perInfo($id);
+
             if(!empty($permission)){
-                // 修改菜单
-                $permission->name = request('name', $permission->name);
-                $permission->description = request('description', $permission->description);
-                $permission->model = request('model', $permission->model);
-                $permission->slug = request('slug', $permission->slug);
+                // 修改权限
+                $data = [
+                    'name' => request('name', $permission->name),
+                    'description' => request('description', $permission->description),
+                    'model' => request('model', $permission->model),
+                    'slug' => request('slug', $permission->slug),
+                ];
+                
+                /*修改权限*/
+                $upPerData = PermissionRepository::upPer($permission, $data);
 
-                $update_bool = $permission->save();
+                $returnData['status'] = $upPerData['status'];
+                $returnData['msg'] = $upPerData['msg'];
 
-                /*修改成功*/
-                if($update_bool){
-                    $returnData['permission'] = $permission->toArray();
-                    $returnData['status'] = true;
-                    $returnData['msg'] = "权限修改成功";
-                }else{
-                    $returnData['status'] = false;
-                    $returnData['msg'] = '权限修改失败';
+                if($upPerData['status']){
+                    $returnData['permission'] = $upPerData['data']->toArray();
                 }
             }else{
                 $returnData['status'] = false;
@@ -224,32 +237,24 @@ class PermissionController extends Controller
      * 
      * @return      
      */
-    public function postAdd(){
-        $slug = request('slug', '');
+    public function postAdd(PermissionRequest $perRequest){
         $returnData = [
-            'csrftoken' => csrf_token()
+            'status' => false,
+            'msg' => '权限添加失败'
         ];
-        if(empty($slug)){
-            $returnData['status'] = false;
-            $returnData['msg'] = '权限(slug)不能为空';
-        }else{
-            $permission = new Permission;
-            $permission->name = request('name', '');
-            $permission->description = request('description', '');
-            $permission->model = request('model', '');
-            $permission->slug = request('slug', '');
 
-            $add_bool = $permission->save();
+        /*设置数据*/
+        $data = [
+            'name' => request('name', ''),
+            'description' => request('description', ''),
+            'model' => request('model', ''),
+            'slug' => request('slug', ''),
+        ];
+        /*添加权限*/
+        $addPerData = PermissionRepository::addPer($data);
 
-            /*修改成功*/
-            if($add_bool){
-                $returnData['status'] = true;
-                $returnData['msg'] = "权限添加成功";
-            }else{
-                $returnData['status'] = false;
-                $returnData['msg'] = "权限添加失败";
-            }
-        }
+        $returnData['status'] = $addPerData['status'];
+        $returnData['msg'] = $addPerData['msg'];
 
         return response()->json($returnData);
     }
@@ -268,8 +273,8 @@ class PermissionController extends Controller
     public function getDelete(){
         $id = Request('id', 0);
 
-        if(is_numeric($id) && !empty($id)){
-            $delete_bool = Permission::destroy($id);
+        if(!empty($id)){
+            $delete_bool = PermissionRepository::delPer($id);
 
             if($delete_bool){
                 $returnData = [

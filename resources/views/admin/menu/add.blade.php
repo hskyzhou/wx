@@ -5,6 +5,7 @@
 <div class="modal-body">
 	<form class="form-horizontal">
       	<div class="box-body">
+            {!! csrf_field() !!}
             <div class="form-group">
               	<label for="inputEmail3" class="col-sm-2 control-label">菜单名称</label>
               	<div class="col-sm-10">
@@ -44,6 +45,14 @@
                     </select>
               </div>
             </div>
+
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-2 control-label">排序</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="inputPassword3" placeholder="排序" name="menu_order">
+                </div>
+            </div>
+
             <div class="form-group">
               	<label for="inputPassword3" class="col-sm-2 control-label">描述</label>
               	<div class="col-sm-10">

@@ -24,25 +24,23 @@
 	      	<h3 class="box-title">权限列表</h3>
 	    </div><!-- /.box-header -->
 	    <div class="box-body">
-	    	@if($is_add)
-	    		<button data-toggle="modal" data-target="#contentmodal" href="/permission/add" type="button" class="btn btn-success">添加权限</button>
-	    	@endif
-	      	<table id="permission" class="table table-bordered table-striped">
-		        <thead>
-		          	<tr>
-		            	<th>权限名称</th>
-		            	<th>权限</th>
-		            	<th>描述</th>
-		            	<th>模型</th>
-		            	<th>创建时间</th>
-		            	<th>修改时间</th>
-		            	<th>操作</th>
-		          	</tr>
-		        </thead>
-		        <tbody>
-		          
-		        </tbody>
-	      	</table>
+	    	{!! $add_button !!}
+      	<table id="permission" class="table table-bordered table-striped">
+	        <thead>
+	          	<tr>
+	            	<th>权限名称</th>
+	            	<th>权限</th>
+	            	<th>描述</th>
+	            	<th>模型</th>
+	            	<th>创建时间</th>
+	            	<th>修改时间</th>
+	            	<th>操作</th>
+	          	</tr>
+	        </thead>
+	        <tbody>
+	          
+	        </tbody>
+      	</table>
 	    </div><!-- /.box-body -->
 	</div><!-- /.box -->
 @endsection

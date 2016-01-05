@@ -5,43 +5,44 @@
 </div>
 <div class="modal-body">
 	<form class="form-horizontal">
-      	<div class="box-body">
-            <div class="form-group">
-              	<label for="inputEmail3" class="col-sm-2 control-label">角色名称</label>
-              	<div class="col-sm-10">
-                	<input type="text" class="form-control" id="inputEmail3" placeholder="角色名称" name="name">
-              	</div>
-            </div>
-            
-            <div class="form-group">
-              	<label for="inputPassword3" class="col-sm-2 control-label">角色</label>
-              	<div class="col-sm-10">
-                	<input type="text" class="form-control" id="inputPassword3" placeholder="角色" name="slug">
-              	</div>
-            </div>
-            <div class="form-group">
-              	<label for="inputPassword3" class="col-sm-2 control-label">描述</label>
-              	<div class="col-sm-10">
-                	<input type="text" class="form-control" id="inputPassword3" placeholder="描述" name="description">
-              	</div>
-            </div>
-            <div class="form-group">
-              	<label for="inputPassword3" class="col-sm-2 control-label">级别</label>
-              	<div class="col-sm-10">
-                	<input type="text" class="form-control" id="inputPassword3" placeholder="级别" name="level">
-              	</div>
-            </div>
-            <div class="form-group">
-              	<label for="inputPassword3" class="col-sm-2 control-label">权限</label>
-      			    <input type="hidden" name="permission" value="">
+    {!! csrf_field() !!}
+  	<div class="box-body">
+        <div class="form-group">
+          	<label for="inputEmail3" class="col-sm-2 control-label">角色名称</label>
+          	<div class="col-sm-10">
+            	<input type="text" class="form-control" id="inputEmail3" placeholder="角色名称" name="name">
+          	</div>
+        </div>
+        
+        <div class="form-group">
+          	<label for="inputPassword3" class="col-sm-2 control-label">角色</label>
+          	<div class="col-sm-10">
+            	<input type="text" class="form-control" id="inputPassword3" placeholder="角色" name="slug">
+          	</div>
+        </div>
+        <div class="form-group">
+          	<label for="inputPassword3" class="col-sm-2 control-label">描述</label>
+          	<div class="col-sm-10">
+            	<input type="text" class="form-control" id="inputPassword3" placeholder="描述" name="description">
+          	</div>
+        </div>
+        <div class="form-group">
+          	<label for="inputPassword3" class="col-sm-2 control-label">级别</label>
+          	<div class="col-sm-10">
+            	<input type="text" class="form-control" id="inputPassword3" placeholder="级别" name="level">
+          	</div>
+        </div>
+        <div class="form-group">
+          	<label for="inputPassword3" class="col-sm-2 control-label">权限</label>
+  			    <input type="hidden" name="permission" value="">
 
-              	<div class="col-sm-10">
-                	<div id="tree_2" class="tree-demo">
-                	</div>
-              	</div>
-            </div>
-      	</div><!-- /.box-body -->
-    </form>
+          	<div class="col-sm-10">
+            	<div id="tree_2" class="tree-demo">
+            	</div>
+          	</div>
+        </div>
+  	</div><!-- /.box-body -->
+  </form>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>

@@ -22,21 +22,7 @@ $(document).ready(function(){
 	            },
 	            { "mData": "created_at" },
 	            { "mData": "updated_at" },
-	            { 
-	            	"mData": "id",
-	            	"mRender": function ( data, type, full ) {
-	            		var returnStr = '';
-	            		if(full.update){
-	            			returnStr += "<a data-toggle='modal' data-target='#contentmodal' href='/role/update?id="+data+"'>修改</a> | ";
-	            		}
-
-	            		if(full.delete){
-	            			returnStr += "<a class='role_delete' href='/role/delete' data-id="+data+">删除</a>";
-	            		}
-
-	            		return returnStr;
-	            	}
-	           	},
+	            { "mData": "button"},
 	        ],
 	        "aLengthMenu": [
 	        	[5, 10, 15, 20, -1],
@@ -78,19 +64,28 @@ $(document).ready(function(){
 			},
 		})
 		.done(function(data) {
-			$("#csrf").find('input[name="csrftoken"]').val(data.csrftoken);
 			if(data.status){
 				oTable.fnDraw();
 				layer.msg(data.msg);
 			}else{
 				layer.msg(data.msg);
 			}
-		})
-		.fail(function() {
-			layer.msg('修改失败');
-		})
-		.always(function() {
+
 			$('.modal').modal('hide');
+		})
+		.fail(function(response) {
+			if(response.status == 422){
+				var data = response.responseJSON;
+				var layerStr = "";
+				for(var i in data){
+					layerStr += data[i];
+				}
+				layer.msg(layerStr);
+			}else if(response.status == 401){
+				layer.msg("请重新登录");
+			}else{
+				layer.msg("系统错误，请刷新重试或者记录已存在");
+			}
 		});
     });
 
@@ -103,8 +98,7 @@ $(document).ready(function(){
 		var level = $add_modal.find('[name="level"]').val();
 		var slug = $add_modal.find('[name="slug"]').val();
 		var permission = $add_modal.find('[name="permission"]').val();
-		
-		var csrftoken = $("#csrf").find('input[name="csrftoken"]').val();
+		var csrftoken = $add_modal.find('[name="_token"]').val();
 
 		$.ajax({
 			url: '/role/add',
@@ -122,24 +116,28 @@ $(document).ready(function(){
 			},
 		})
 		.done(function(data) {
-			$("#csrf").find('input[name="csrftoken"]').val(data.csrftoken);
-
 			if(data.status){
 				oTable.fnDraw();
-				var name = $add_modal.find('[name="name"]').val('');
-				var description = $add_modal.find('[name="description"]').val('');
-				var level = $add_modal.find('[name="level"]').val('');
-				var slug = $add_modal.find('[name="slug"]').val('');
 				layer.msg(data.msg);
 			}else{
 				layer.msg(data.msg);
 			}
-		})
-		.fail(function() {
-			layer.msg('修改失败');
-		})
-		.always(function() {
+
 			$('.modal').modal('hide');
+		})
+		.fail(function(response) {
+			if(response.status == 422){
+				var data = response.responseJSON;
+				var layerStr = "";
+				for(var i in data){
+					layerStr += data[i];
+				}
+				layer.msg(layerStr);
+			}else if(response.status == 401){
+				layer.msg("请重新登录");
+			}else{
+				layer.msg("系统错误，请刷新重试或者记录已存在");
+			}
 		});
     });
 
@@ -148,24 +146,27 @@ $(document).ready(function(){
     	var $this = $(this);
     	var id = $this.data('id');
 
-    	$.ajax({
-    		url: '/role/delete',
-    		type: 'GET',
-    		dataType: 'json',
-    		data: {id: id},
-    	})
-    	.done(function(data) {
-    		if(data.status){
-    			layer.msg(data.msg);
-    			oTable.fnDraw();
-    		}else{
-    			/*没有数据*/
-    			layer.msg(data.msg);
-    		}
-    	})
-    	.fail(function() {
-    		layer.msg('获取失败,请稍后重试');
+    	layer.confirm("您确定要删除吗？", function(){
+    		$.ajax({
+    			url: '/role/delete',
+    			type: 'GET',
+    			dataType: 'json',
+    			data: {id: id},
+    		})
+    		.done(function(data) {
+    			if(data.status){
+    				layer.msg(data.msg);
+    				oTable.fnDraw();
+    			}else{
+    				/*没有数据*/
+    				layer.msg(data.msg);
+    			}
+    		})
+    		.fail(function() {
+    			layer.msg('获取失败,请稍后重试');
+    		});
     	});
+    	
     	
     	return false;
     });

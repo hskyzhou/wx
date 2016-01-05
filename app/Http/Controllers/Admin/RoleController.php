@@ -5,14 +5,22 @@ namespace App\Http\Controllers\Admin;
 use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Menu;
-
-use Bican\Roles\Models\Role;
-use Bican\Roles\Models\Permission;
 
 use App\Services\Contracts\PermissionContract;
 
-use Auth;
+/*服务*/
+use App\Services\Contracts\ButtonContract;
+
+/*仓库*/
+use RoleRepository;
+use PermissionRepository;
+
+/*底层服务*/
+use DB;
+
+/*Request*/
+use App\Http\Requests\Backend\RoleRequest;
+
 /**
  * 角色管理类
  * 
@@ -27,16 +35,35 @@ class RoleController extends Controller
     /*当前登录用户*/
     protected $current_user;
 
+    /*添加角色*/
+    protected $admin_add_roles;
+
+    /*管理角色*/
+    protected $admin_manage_roles;
+
+    /*查看角色列表*/
+    protected $admin_list_roles;
+
+    /*修改角色*/
+    protected $admin_update_roles;
+
+    /*删除角色*/
+    protected $admin_delete_roles;
+
 	public function __construct(){
-        $this->current_user = Auth::user();
+        $this->current_user = auth()->user();
 
-        $this->middleware('permission:admin.roles.manage');
+        $this->admin_add_roles = config('backend.role.admin_add_roles');
+        $this->admin_manage_roles = config('backend.role.admin_manage_roles');
+        $this->admin_list_roles = config('backend.role.admin_list_roles');
+        $this->admin_update_roles = config('backend.role.admin_update_roles');
+        $this->admin_delete_roles = config('backend.role.admin_delete_roles');
 
-        $this->middleware('permission:admin.roles.list', ['only' => ['getInde', 'getShow', 'getRolelist']]);
-
-        $this->middleware('permission:admin.roles.add', ['only' => ['getAdd', 'postAdd']]);
-        $this->middleware('permission:admin.roles.update', ['only' => ['getUpdate', 'postUpdate']]);
-        $this->middleware('permission:admin.roles.delete', ['only' => ['getDelete']]);
+        $this->middleware('permission:' . $this->admin_manage_roles);
+        $this->middleware('permission:' . $this->admin_list_roles, ['only' => ['getInde', 'getShow', 'getRolelist']]);
+        $this->middleware('permission:' . $this->admin_add_roles, ['only' => ['getAdd', 'postAdd']]);
+        $this->middleware('permission:' . $this->admin_update_roles, ['only' => ['getUpdate', 'postUpdate']]);
+        $this->middleware('permission:' . $this->admin_delete_roles, ['only' => ['getDelete']]);
 	}
     
     public function getIndex(){
@@ -54,18 +81,10 @@ class RoleController extends Controller
      * 
      * @return        
      */
-    public function getShow(){
-        $is_add = false;//添加权限
+    public function getShow(ButtonContract $buttonContract){
+        $add_button = $buttonContract->createAddModalButton($this->admin_add_roles, route('role.add.get'), '添加角色')->getReturnStr();
 
-        if($this->current_user->can('admin.roles.add')){
-            $is_add = true;
-        }
-
-        $returnData = [
-            'is_add' => $is_add,
-        ];
-
-        return view('admin.role.show')->with($returnData);
+        return view('admin.role.show')->with(compact('add_button'));
     }
 
     /**
@@ -85,27 +104,16 @@ class RoleController extends Controller
         $start = request('iDisplayStart', 0);
         $search = request('sSearch', '');
 
-        /*设置角色条件*/
-        $role = new Role;
-        /*获取角色总量*/
-        $count = $role->count();
+        $data = [
+            'search' => $search,
+            'start' => $start,
+            'length' => $length,
+        ];
 
-        if(!empty($search)){
-            $role = $role->where('name', 'like', "%{$search}%");
-        }
-        /*设置偏移*/
-        $role = $role->offset($start);
-        /*设置limit*/
-        $role = $role->limit($length);
-        
-        /*获取权限集*/
-        $result_roles = $role->get();
-        $roles = $result_roles->toArray();
-
-        foreach($result_roles as $key => $result_role){
-            $roles[$key]['update'] = $this->current_user->can('admin.roles.update');
-            $roles[$key]['delete'] = $this->current_user->can('admin.roles.delete');
-        }
+        /*获取总量*/
+        $count = RoleRepository::count();
+        /*获取列表数据*/
+        $roles = RoleRepository::rolelist($data);
 
         $returnData = [
             "draw" => $draw,
@@ -118,7 +126,7 @@ class RoleController extends Controller
     }
 
     /**
-     * 获取修改菜单数据--GET
+     * 获取修改角色数据--GET
      *  
      * @param        
      * 
@@ -128,27 +136,17 @@ class RoleController extends Controller
      * 
      * @return        
      */
-    public function getUpdate(PermissionContract $perCon){
+    public function getUpdate(){
         $id = request('id', 0);
 
         $returnData = [];
-        if(is_numeric($id) || empty($id)){
-            $role = Role::where('id', '=', $id)->first();
+        if(!empty($id)){
+            /*获取角色详情*/
+            $role = RoleRepository::roleInfo($id);
+
             if(!empty($role)){
-                /*所有权限*/
-                $all_permissions = Permission::all();
-                /*当前角色所拥有的权限*/
-                $role_permissions = $role->permissions()->get()->keyBy('slug')->keys()->toArray();
-
-                /*处理后的权限*/
-                $deal_permissions = [];
-
-                foreach($all_permissions as $all_permission){
-                    array_set($deal_permissions, $all_permission->slug, json_encode(['key' => $all_permission->slug, 'val'=> $all_permission->name . ":" . $all_permission->description]));
-                }
-
-                /*转成js数据*/
-                $permissions = $perCon->dealArrayToJsTreeUpdate($deal_permissions, $role_permissions);
+                /*权限修改中使用的权限*/
+                $permissions = PermissionRepository::permissionInUpdate($role);
 
                 $returnData = [
                     'status' => true,
@@ -173,7 +171,7 @@ class RoleController extends Controller
     }
     
     /**
-     * 修改菜单数据
+     * 修改角色数据
      * 
      * @param       
      * 
@@ -183,45 +181,69 @@ class RoleController extends Controller
      * 
      * @return      
      */
-    public function postUpdate(){
-        $id = request('id', '');
+    public function postUpdate(RoleRequest $roleRequest){
         $returnData = [
-            'csrftoken' => csrf_token()
+            'status' => true,
+            'msg' => '角色添加成功',
         ];
+
+        /*获取id*/
+        $id = request('id', '');
+
         if(!empty($id)){
-            $role = Role::where('id', '=', $id)->first();
+            /*获取 角色详情*/
+            $role = RoleRepository::roleInfo($id);
+
             if(!empty($role)){
-                // 修改菜单
-                $role->name = request('name', $role->name);
-                $role->description = request('description', $role->description);
-                $role->level = request('level', $role->level);
-                $role->slug = request('slug', $role->slug);
+                // 修改角色信息
+                $data = [
+                    'name' => request('name', $role->name),
+                    'description' => request('description', $role->description),
+                    'level' => request('level', $role->level),
+                    'slug' => request('slug', $role->slug),
+                ];
 
-                $update_bool = $role->save();
+                /*开启事务*/
+                DB::beginTransaction();
 
-                /*修改成功*/
-                if($update_bool){
+                $upRoleData = RoleRepository::upRole($role, $data);
+
+                /*设置返回数据*/
+                $returnData['status'] = $upRoleData['status'];
+                $returnData['msg'] = $upRoleData['msg'];
+
+                /*角色修改成功*/
+                if($upRoleData['status']){
+                    /*获取 修改后的角色信息*/
+                    $update_role = $upRoleData['data'];
+
                     /*角色删除权限*/
                     $role->detachAllPermissions();
                     
                     /*获取修改的权限*/
                     $update_permissions = request('permission');
+
                     if(!empty($update_permissions)){
-                        /*角色添加权限*/
-                        $arr_permissions = explode(',', $update_permissions);
-                        $permissions = Permission::whereIn('slug', $arr_permissions)->get();
-                        foreach($permissions as $permission){
-                            $role->attachPermission($permission);
+                        $addPermissionData = RoleRepository::roleAddPermission($update_role, $update_permissions);
+
+                        if($addPermissionData['status']){
+                            $returnData['role'] = $role->toArray();
+                        }else{
+                            /*事务回滚*/
+                            DB::rollback();
+                            $returnData['status'] = false;
+                            $returnData['msg'] = "角色权限修改失败";
+                            return response()->json($returnData);
                         }
                     }
-
-                    $returnData['role'] = $role->toArray();
-                    $returnData['status'] = true;
-                    $returnData['msg'] = "角色修改成功";
                 }else{
-                    $returnData['status'] = false;
-                    $returnData['msg'] = '角色修改失败';
+                    // 事务回滚
+                    DB::rollback();
+                    return response()->json($returnData);
                 }
+
+                /*提交事务*/
+                DB::commit();
             }else{
                 $returnData['status'] = false;
                 $returnData['msg'] = '获取数据失败';
@@ -245,20 +267,10 @@ class RoleController extends Controller
      * 
      * @return        
      */
-    public function getAdd(PermissionContract $perCon){
-        $all_permissions = Permission::all();
+    public function getAdd(){
+        /*获取 展示的 权限列表*/
+        $permissions = PermissionRepository::permissionInAdd();
 
-        $deal_permissions = [];
-
-        foreach($all_permissions as $all_permission){
-            array_set($deal_permissions, $all_permission->slug, json_encode(['key' => $all_permission->slug, 'val'=> $all_permission->name . ":" . $all_permission->description]));
-        }
-
-        // dd($deal_permissions);
-        $permissions = $perCon->dealArrayToJsTreeAdd($deal_permissions);
-
-        // dd($permissions);
-        // var_dump(json_encode($permissions[0]));
         $returnData = [
             'permissions' => json_encode($permissions),
         ];
@@ -277,48 +289,67 @@ class RoleController extends Controller
      * 
      * @return      
      */
-    public function postAdd(){
-        $slug = request('slug', '');
+    public function postAdd(RoleRequest $roleRequest){
         $returnData = [
-            'csrftoken' => csrf_token()
+            'status' => true,
+            'msg' => '角色添加成功',
         ];
-        if(empty($slug)){
-            $returnData['status'] = false;
-            $returnData['msg'] = '角色(slug)不能为空';
-        }else{
-            $role = new Role;
-            $role->name = request('name', '');
-            $role->description = request('description', '');
-            $role->level = request('level', '');
-            $role->slug = request('slug', '');
-            $add_bool = $role->save();
 
-            /*添加成功*/
-            if($add_bool){
-                /*添加权限*/
-                $add_permissions = request('permission');
-                if(!empty($add_permissions)){
-                    $arr_permissions = explode(',', $add_permissions);
-                    $permissions = Permission::whereIn('slug', $arr_permissions)->get();
-                    // dd($permissions->count());
-                    foreach($permissions as $permission){
-                        $role->attachPermission($permission);
-                    }
+        $data = [
+            'name' => request('name', ''),
+            'description' => request('description', ''),
+            'level' => request('level', ''),
+            'slug' => request('slug', ''),
+        ];
+        
+        /*开启事务*/
+        DB::beginTransaction();
+
+        /*添加角色*/
+        $addRoleData = RoleRepository::addRole($data);
+
+        /*添加角色成功*/
+        if($addRoleData['status']){
+            $role = $addRoleData['data'];
+
+            /*角色  添加权限*/
+            $permissions = request('permission');
+
+            if(!empty($permissions)){
+                $addPermissionData = RoleRepository::roleAddPermission($role, $permissions);
+
+                if($addPermissionData['status']){
+                    $returnData['role'] = $role->toArray();
+                    $returnData['status'] = true;
+                    $returnData['msg'] = "角色权限添加成功";
+                }else{
+                    /*事务回滚*/
+                    DB::rollback();
+
+                    $returnData['status'] = false;
+                    $returnData['msg'] = "角色权限添加失败";
+                    
+                    return response()->json($returnData);
                 }
-                $returnData['role'] = $role->toArray();
-                $returnData['status'] = true;
-                $returnData['msg'] = "角色添加成功";
-            }else{
-                $returnData['status'] = false;
-                $returnData['msg'] = "角色添加失败";
             }
+        }else{
+            /*事务回滚*/
+            DB::rollback();
+
+            $returnData['status'] = false;
+            $returnData['msg'] = "角色添加失败";
+
+            return response()->json($returnData);
         }
+
+        /*提交事务*/
+        DB::commit();
 
         return response()->json($returnData);
     }
 
     /**
-     * 删除菜单
+     * 删除角色
      * 
      * @param       
      * 
@@ -331,8 +362,8 @@ class RoleController extends Controller
     public function getDelete(){
         $id = Request('id', 0);
 
-        if(is_numeric($id) && !empty($id)){
-            $delete_bool = Role::destroy($id);
+        if(!empty($id)){
+            $delete_bool = RoleRepository::delRole($id);
 
             if($delete_bool){
                 $returnData = [
@@ -369,7 +400,7 @@ class RoleController extends Controller
         $id = Request('id', 0);
 
         if(is_numeric($id) && !empty($id)){
-            $role = Role::find($id);
+            $role = RoleRepository::roleInfo($id);
 
             $role_permissions = $role->permissions()->get();
 
@@ -394,5 +425,4 @@ class RoleController extends Controller
         }
         return view('admin.role.permission')->with($returnData);
     }
-    
 }

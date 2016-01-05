@@ -55,22 +55,10 @@ $(document).ready(function(){
 	            { "mData": "url" },
 	            { "mData": "parent_id" },
 	            { "mData": "description" },
+	            { "mData": "menu_order" },
 	            { "mData": "created_at" },
 	            { "mData": "updated_at" },
-	            { 
-	            	"mData": "id",
-	            	"mRender": function ( data, type, full ) {
-	            		var returnStr = '';
-	            		if(full.update){
-	            			returnStr += "<a data-toggle='modal' data-target='#contentmodal' href='/menu/update?id="+data+"'>修改</a> | ";
-	            		}
-
-	            		if(full.delete){
-	            			returnStr += "<a class='menu_delete' href='' data-id="+data+">删除</a>";
-	            		}
-	            		return returnStr;
-	            	}
-	           	},
+	            { "mData" : "button"},
 	        ],
 	        "aLengthMenu": [
 	        	[5, 10, 15, 20, -1],
@@ -109,8 +97,10 @@ $(document).ready(function(){
 		
 		var slug = $update_modal.find('[name="slug"] option:selected').val();
 		var parent_id = $update_modal.find('[name="parent_id"] option:selected').val();
+		var menu_order = $update_modal.find('[name="menu_order"]').val();
 
-		var csrftoken = $("#csrf").find('input[name="csrftoken"]').val();
+		var csrftoken = $("input:hidden[name='_token']").val();
+
 		var id = $(this).data('id');
 
 		$.ajax({
@@ -127,10 +117,10 @@ $(document).ready(function(){
 				url : url,
 				slug : slug,
 				parent_id : parent_id,
+				menu_order : menu_order
 			},
 		})
 		.done(function(data) {
-			$("#csrf").find('input[name="csrftoken"]').val(data.csrftoken);
 			if(data.status){
 				oTable.fnDraw();
 				layer.msg(data.msg);
@@ -156,8 +146,9 @@ $(document).ready(function(){
 		
 		var slug = $update_modal.find('[name="slug"] option:selected').val();
 		var parent_id = $update_modal.find('[name="parent_id"] option:selected').val();
+		var menu_order = $update_modal.find('[name="menu_order"]').val();
 
-		var csrftoken = $("#csrf").find('input[name="csrftoken"]').val();
+		var csrftoken = $("input:hidden[name='_token']").val();
 
 		$.ajax({
 			url: '/menu/add',
@@ -172,11 +163,10 @@ $(document).ready(function(){
 				url : url,
 				slug : slug,
 				parent_id : parent_id,
+				menu_order : menu_order
 			},
 		})
 		.done(function(data) {
-			$("#csrf").find('input[name="csrftoken"]').val(data.csrftoken);
-
 			if(data.status){
 				oTable.fnDraw();
 				layer.msg(data.msg);
@@ -185,7 +175,7 @@ $(document).ready(function(){
 			}
 		})
 		.fail(function() {
-			layer.msg('修改失败');
+			layer.msg('添加失败');
 		})
 		.always(function() {
 			$('.modal').modal('hide');
@@ -197,25 +187,27 @@ $(document).ready(function(){
 		var $this = $(this);
 		var id = $this.data('id');
 
-		$.ajax({
-			url: '/menu/delete',
-			type: 'GET',
-			dataType: 'json',
-			data: {id: id},
-		})
-		.done(function(data) {
-			if(data.status){
-				layer.msg(data.msg);
-				oTable.fnDraw();
-			}else{
-				/*没有数据*/
-				layer.msg(data.msg);
-			}
-		})
-		.fail(function() {
-			layer.msg('获取失败,请稍后重试');
+		layer.confirm("您确定要删除吗？", function(){
+			$.ajax({
+				url: '/menu/delete',
+				type: 'GET',
+				dataType: 'json',
+				data: {id: id},
+			})
+			.done(function(data) {
+				if(data.status){
+					layer.msg(data.msg);
+					oTable.fnDraw();
+				}else{
+					/*没有数据*/
+					layer.msg(data.msg);
+				}
+			})
+			.fail(function() {
+				layer.msg('获取失败,请稍后重试');
+			});
 		});
-		
+
 		return false;
 	});
 

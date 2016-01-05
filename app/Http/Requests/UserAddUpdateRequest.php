@@ -24,9 +24,9 @@ class UserAddUpdateRequest extends Request
     public function rules()
     {
         return [
-            'name' => 'required|unique:users|max:255',
-            'email' => 'required|unique:users|max:255|email',
-            'password' => 'required|min:6',
+            'name' => 'required|unique:users,name,'.request('id').',id|max:255',
+            'email' => 'required|unique:users,email,'.request('id').',id|max:255|email',
+            'password' => 'min:6',
         ];
     }
 
