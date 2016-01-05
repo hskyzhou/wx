@@ -1,7 +1,7 @@
 <?php 
 	namespace App\Repositories\Backend;
 
-	use App\Models\User;
+	use App\User;
 
 	use Bican\Roles\Models\Role;
 	use Bican\Roles\Models\Permission;
