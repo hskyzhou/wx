@@ -3,8 +3,10 @@
 
 	use App\Services\Contracts\MenuContract;
 
-	use Auth, Redis;
-	use App\Menu;
+	use Redis;
+
+	/* 仓库*/
+	use MenuRepository;
 
 	/**
 	 * 用户-菜单
@@ -18,8 +20,10 @@
 	 * @return		
 	 */
 	class UserMenuService implements MenuContract{
-		public function __construct(){
+		protected $current_user;
 
+		public function __construct(){
+			$this->current_user = auth()->user();
 		}
 
 		/**
@@ -35,8 +39,7 @@
 		 */
 		
 		public function getUserMenu(){
-			$user = Auth::user();
-			$menus = Menu::all();
+			$menus = MenuRepository::menuAll();
 
 			$user_menu = [];  //用户可以访问的菜单
 
@@ -44,7 +47,7 @@
 			// 	$user_menu = json_decode(Redis::command('HGET', ['menu', $user->id]), true);
 			// }else{
 				foreach($menus as $menu){
-					if($user->can($menu->slug)){
+					if($this->current_user->can($menu->slug)){
 						$user_menu[$menu->id] = $menu->toArray();
 					}
 				}
@@ -73,8 +76,6 @@
 				    $menus[$menu['parent_id']]['son'][$menu['id']] = &$menus[$menu['id']];
 				}
 			}
-
-			$user = Auth::user();
 
 			$user_menu = isset($menus[0]['son']) ? $menus[0]['son'] : $menus;
 			

@@ -17,6 +17,8 @@ class ComposerServiceProvider extends ServiceProvider
         view()->composer(['admin.header', 'admin.layout'], \App\ViewComposers\Backend\HeaderComposer::class);
         view()->composer('admin.layout', \App\ViewComposers\Backend\BreadcrumbComposer::class);
         view()->composer('admin.layout', \App\ViewComposers\Backend\MenuComposer::class);
+        view()->composer(['admin.layout', 'admin.header'], \App\ViewComposers\Backend\LayoutComposer::class);
+
     }
 
     /**

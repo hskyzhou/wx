@@ -78,7 +78,7 @@
 		 * @return		
 		 */
 		public function menuList($data){
-			$menu = Menu::select();
+			$menu = Menu::select()->orderBy('menu_order', 'desc');
 
 		    if(!empty($data['search'])){
 				$menu = $menu->where('name', 'like', "%{$data['search']}%");
@@ -101,7 +101,6 @@
 		    }
 		    return $menus;
 		}
-
 
 		/**
 		 * 获取 菜单总量
@@ -138,6 +137,22 @@
 
 			return $menu->where('parent_id', '=', 0)->count();
 		}
+
+		/**
+		 * 获取 所有菜单
+		 * 
+		 * @param		
+		 * 
+		 * @author		wen.zhou@bioon.com
+		 * 
+		 * @date		2016-01-05 11:26:51
+		 * 
+		 * @return		
+		 */
+		public function menuAll(){
+			return Menu::orderBy('menu_order', 'desc')->get();
+		}
+
 		
 
 		/*====================================添加数据======================*/
