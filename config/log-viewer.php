@@ -24,7 +24,7 @@ return [
         'attributes' => [
             'prefix'     => 'log/log-viewer',
 
-            'middleware' => ['auth', 'after.auth', 'permission:login.backend', 'before.menu'],
+            'middleware' => ['auth', 'permission:login.backend'],
         ],
     ],
 

@@ -33,8 +33,5 @@ class Kernel extends HttpKernel
         'role' => \Bican\Roles\Middleware\VerifyRole::class,
         'permission' => \Bican\Roles\Middleware\VerifyPermission::class,
         'level' => \Bican\Roles\Middleware\VerifyLevel::class,
-
-        'before.menu' => \App\Http\Middleware\BeforeAdminMiddleware::class,
-        'after.auth' => \App\Http\Middleware\AfterAuthMiddleware::class,
     ];
 }
