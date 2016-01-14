@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Seeder;
 
-use App\Menu;
+use App\Models\Menu;
 
 class MenusTableSeeder extends Seeder
 {
