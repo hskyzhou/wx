@@ -13,7 +13,7 @@ class AddColumnMenuorder extends Migration
     public function up()
     {
         Schema::table('menus', function (Blueprint $table) {
-            $table->string('menu_order')->default(1);
+            $table->integer('menu_order')->default(1);
         });
     }
 
