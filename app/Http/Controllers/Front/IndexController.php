@@ -23,7 +23,7 @@ class IndexController extends Controller
      */
     public function index(Request $request){
         $postData = file_get_contents("php://input");
-        // \Log::info(request());
+        \Log::info(request());
         // \Log::info(request()->all());
 
 //         $str = '<xml>
