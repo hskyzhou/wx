@@ -42,13 +42,13 @@ class IndexController extends Controller
         // foreach($xml->children() as $child){
         //     echo $child, '<br />';
         // }
+        \Log::info($postData);
 
         $formatter = Formatter::make($postData, Formatter::XML);
 
         $xmlArr = $formatter->toArray();
 
         // print $xmlArr['ToUserName'];
-        \Log::info($xmlArr);
     }
 
 }
