@@ -83,5 +83,5 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'permission:login
 });
 
 Route::group(['namespace' => 'Front'], function($router){
-    $router->get('/', 'IndexController@index');
+    $router->match(['get', 'post'], '/', 'IndexController@index');
 });
