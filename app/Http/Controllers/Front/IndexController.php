@@ -23,7 +23,7 @@ class IndexController extends Controller
      */
     public function index(Request $request){
         $postData = file_get_contents("php://input");
-        \Log::info(request());
+        // \Log::info(request());
         // \Log::info(request()->all());
 
 //         $str = '<xml>
@@ -42,13 +42,29 @@ class IndexController extends Controller
         // foreach($xml->children() as $child){
         //     echo $child, '<br />';
         // }
-        \Log::info($postData);
+        // \Log::info($postData);
+        if($postData){
 
-        $formatter = Formatter::make($postData, Formatter::XML);
+            $formatter = Formatter::make($postData, Formatter::XML);
 
-        $xmlArr = $formatter->toArray();
+            $xmlArr = $formatter->toArray();
 
-        // print $xmlArr['ToUserName'];
+            echo $this->setReturnText($xmlArr);
+        }
+    }
+
+    protected function setReturnText($data){
+        $template = "
+            <xml>
+            <ToUserName><![CDATA[%s]]></ToUserName>
+            <FromUserName><![CDATA[%s]]></FromUserName>
+            <CreateTime>%s</CreateTime>
+            <MsgType><![CDATA[text]]></MsgType>
+            <Content><![CDATA[%s]]></Content>
+            </xml>
+        ";
+
+        return sprintf($template, $data['FromUserName'], $data['ToUserName'], time(), $data['Content']);
     }
 
 }
