@@ -22,8 +22,6 @@ Route::get('code/getcode','Auth\CodeController@getRefushCode');
 
 /*后台*/
 Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'permission:login.backend']], function ($router) {
-	Route::get('/', 'AdminController@getIndex');
-
 	/*角色*/
     $router->group(['prefix' => 'role', 'as' => 'role.'], function($router){
     	$router->get('/', 'RoleController@getIndex');
@@ -82,4 +80,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'permission:login
     Route::controller('admin', 'AdminController'); //后台用户首页
     
     Route::get('log', 'LogviewController@index'); //后台用户首页
+});
+
+Route::group(['namespace' => 'Front'], function($router){
+    $router->get('/', 'IndexController@index');
 });
