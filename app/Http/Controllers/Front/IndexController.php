@@ -49,7 +49,12 @@ class IndexController extends Controller
 
             $xmlArr = $formatter->toArray();
 
-            echo $this->setReturnText($xmlArr);
+            if($xmlArr){
+                if($xmlArr['Content'] == '吴文洁'){
+                    $xmlArr['Content'] = '周文最喜欢吴文洁';
+                }
+                echo $this->setReturnText($xmlArr);
+            }
         }
     }
 
