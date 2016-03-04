@@ -20,7 +20,8 @@ class IndexController extends Controller
      * @return        
      */
     public function index(Request $request){
-        dd($request);
+        // dd($request);
+        \Log::info(request()->all());
     }
 
 }
