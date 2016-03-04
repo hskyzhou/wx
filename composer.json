@@ -11,7 +11,8 @@
         "barryvdh/laravel-debugbar": "^2.0",
         "predis/predis": "^1.0",
         "arcanedev/log-viewer": "~3.0",
-        "hieu-le/active": "~2.0"
+        "hieu-le/active": "~2.0",
+        "soapbox/laravel-formatter": "2.x"
 
     },
     "require-dev": {
