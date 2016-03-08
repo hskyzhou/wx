@@ -22,41 +22,56 @@ class IndexController extends Controller
      * @return        
      */
     public function index(Request $request){
-        $postData = file_get_contents("php://input");
-        // \Log::info(request());
-        // \Log::info(request()->all());
+        $xmlArr = $this->getData();
 
-//         $str = '<xml>
-// <ToUserName><![CDATA[gh_88c164149eee]]></ToUserName>
-// <FromUserName><![CDATA[oYCsEj6T9NqEpY1wvgddqhSVUWkk]]></FromUserName>
-// <CreateTime>1457072778</CreateTime>
-// <MsgType><![CDATA[text]]></MsgType>
-// <Content><![CDATA[涓夊浗鏉€]]></Content>
-// <MsgId>6258079929803722299</MsgId>
-// <Encrypt><![CDATA[HA4avQ1ziXHFLPI2IScAh8GFB7ccFCrC1+GhbmpLp57OLL+SNmpNSDeFVNKLcfZtGn+gAx+pXo8aaCS93fVtkQi8B/307EEMuJoDKEkwFY3Z73nLvCpCNijElzQoGkk0ceCJHD5YkMklLSsy2vVwIBGLNW4tq8SE7LMOAOMko75Kl5U9uk/j4xBNRI7LRQQ3qcLgFNZvta7tzL+l+GM9WozTDsKoPLEN5GBU5fZcuNA2fOV8kmoNcGkJxgreEyKTe2XDiZQ3WZddsuz4RVIF2EVIMOE742t1S0O+1QDxbB9hbctQGe4l/PmNTWo7bZjUe39C48vj8ehemUYVhE1mo8AKTiNCleicFpBnzjK0uGQ/2fKY0kzFQox+6XNAiDAI8Abv7fRj0MF835UU/02jiBodMf7NjU596vEXxIZALbxG9OR8qFWovEZ5RcebNqcqAN56JkN1P/nb3bA+StTN9g==]]></Encrypt>
-// </xml>';
-
-        // $xml = simplexml_load_string($str);
-
-        // dd($xml->ToUserName);
-        // foreach($xml->children() as $child){
-        //     echo $child, '<br />';
-        // }
-        // \Log::info($postData);
-        if($postData){
-
-            $formatter = Formatter::make($postData, Formatter::XML);
-
-            $xmlArr = $formatter->toArray();
-
-            if($xmlArr){
-                if($xmlArr['Content'] == '吴文洁'){
-                    $xmlArr['Content'] = '周文最喜欢吴文洁';
-                }
-                echo $this->setReturnText($xmlArr);
-            }
+        switch (strtolower($xmlArr['MsgType'])) {
+            case 'text':
+                # code...
+                break;
+            
+            case 'event':
+                $this->responseEvent($xmlArr);
+                break;
+            default:
+                # code...
+                break;
         }
     }
+
+    /**
+     * 处理事件
+     * 
+     * @param        
+     * 
+     * @author        xezw211@gmail.com
+     * 
+     * @date        2016-03-08 19:14:40
+     * 
+     * @return        
+     */
+    public function responseEvent($data){
+        $returnData = [];
+        switch (strtolower($data['event'])) {
+            /*订阅公众账号*/
+            case 'subscribe':
+                $returnData = [
+                    'ToUserName' => $data['FromUserName'],
+                    'FromUserName' => $data['ToUserName'],
+                    'Content' => "欢迎关注python爱好者关注好"
+                ];
+                break;
+            
+            /*取消订阅公众账号*/
+            case 'unsubscribe':
+                break;
+            default:
+                # code...
+                break;
+
+            echo $this->setReturnText($returnData);
+        }
+    }
+
 
     protected function setReturnText($data){
         $template = "
@@ -72,4 +87,27 @@ class IndexController extends Controller
         return sprintf($template, $data['FromUserName'], $data['ToUserName'], time(), $data['Content']);
     }
 
+    /**
+     * 获取 微信传递的 xml数据
+     * 
+     * @param        
+     * 
+     * @author        xezw211@gmail.com
+     * 
+     * @date        2016-03-08 19:27:04
+     * 
+     * @return        
+     */
+    
+    protected function getData(){
+        $returnData = [];
+        $xmlData = file_get_contents("php://input");
+        /*xml数据存在*/
+        if($xmlData){
+            $formatter = Formatter::make($xmlData, Formatter::XML);
+            $returnData = $formatter->toArray();
+        }
+
+        return $returnData;
+    }
 }
