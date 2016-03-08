@@ -82,6 +82,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'permission:login
     Route::get('log', 'LogviewController@index'); //后台用户首页
 });
 
-Route::group(['namespace' => 'Front'], function($router){
+Route::group(['namespace' => 'Front', 'middleware' => 'check.wechat'], function($router){
     $router->match(['get', 'post'], '/', 'IndexController@index');
 });
