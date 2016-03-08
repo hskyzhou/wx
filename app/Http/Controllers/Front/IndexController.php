@@ -51,7 +51,7 @@ class IndexController extends Controller
      */
     public function responseEvent($data){
         $returnData = [];
-        switch (strtolower($data['event'])) {
+        switch (strtolower($data['Event'])) {
             /*订阅公众账号*/
             case 'subscribe':
                 $returnData = [
