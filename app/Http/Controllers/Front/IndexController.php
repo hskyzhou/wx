@@ -59,7 +59,7 @@ class IndexController extends Controller
                 $returnData = [
                     'ToUserName' => $data['FromUserName'],
                     'FromUserName' => $data['ToUserName'],
-                    'Content' => "欢迎关注python爱好者关注好"
+                    'Content' => trans('label.welcome.text'),
                 ];
                 break;
             
