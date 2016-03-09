@@ -25,7 +25,7 @@ class IndexController extends Controller
      */
     public function index(Request $request){
         $xmlArr = $this->getData();
-
+        Log::info($xmlArr);
         switch (strtolower($xmlArr['MsgType'])) {
             case 'text':
                 # code...
@@ -65,15 +65,15 @@ class IndexController extends Controller
             
             /*取消订阅公众账号*/
             case 'unsubscribe':
+                exit;
                 break;
             default:
                 # code...
                 break;
         }
 
-        Log::info('get data');
-        Log::info($returnData);
         $returnText = $this->setReturnText($returnData);
+
         Log::info($returnText);
         echo $returnText;
         exit;
