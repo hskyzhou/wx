@@ -31,16 +31,19 @@ class CheckWeChatMiddleware
         $tempString = sha1($tmpString);
 
         if($tempString == $signature){
+            Log::info('equal');
             if($echostr){
                 Log::info($echostr);
                 echo $echostr;
                 exit;
             }
         }else{
-            return '';
+            Log::info('not equal');
+            echo '';
             exit;
         }
 
+        Log::info('go on');
         return $next($request);
     }
 }
