@@ -69,14 +69,14 @@ class IndexController extends Controller
             default:
                 # code...
                 break;
-
-            Log::info('get data');
-            Log::info($returnData);
-            $returnText = $this->setReturnText($returnData);
-            Log::info($returnText);
-            echo $returnText;
-            exit;
         }
+
+        Log::info('get data');
+        Log::info($returnData);
+        $returnText = $this->setReturnText($returnData);
+        Log::info($returnText);
+        echo $returnText;
+        exit;
     }
 
 
