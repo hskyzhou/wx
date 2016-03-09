@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 
 use SoapBox\Formatter\Formatter;
 
+use Log;
+
 class IndexController extends Controller
 {
     /**
