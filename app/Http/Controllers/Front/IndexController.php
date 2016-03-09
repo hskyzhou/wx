@@ -32,7 +32,6 @@ class IndexController extends Controller
                 break;
             
             case 'event':
-                Log::info('event');
                 $this->responseEvent($xmlArr);
                 break;
             default:
@@ -57,7 +56,6 @@ class IndexController extends Controller
         switch (strtolower($data['Event'])) {
             /*订阅公众账号*/
             case 'subscribe':
-                Log::info('set return data');
                 $returnData = [
                     'ToUserName' => $data['FromUserName'],
                     'FromUserName' => $data['ToUserName'],
@@ -72,8 +70,10 @@ class IndexController extends Controller
                 # code...
                 break;
 
+            Log::info('get data');
+            Log::info($returnData);
             $returnText = $this->setReturnText($returnData);
-            \Log::info($returnText);
+            Log::info($returnText);
             echo $returnText;
             exit;
         }
