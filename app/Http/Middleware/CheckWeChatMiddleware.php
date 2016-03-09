@@ -17,7 +17,29 @@ class CheckWeChatMiddleware
      */
     public function handle($request, Closure $next)
     {
-        Log::info($request);
+        $signature = request('signature');
+        $timestamp = request('timestamp');
+        $nonce = request('nonce');
+        $token = weChatToken();
+        $echostr = request('echostr', '');
+
+
+        $tmpArr = [$nonce, $timestamp, $token];
+        sort($tmpArr, SORT_STRING);   
+
+        $tmpString = implode($tmpArr);
+        $tempString = sha1($tmpString);
+
+        if($tempString == $signature){
+            if($echostr){
+                echo $echostr;
+                exit;
+            }
+        }else{
+            return '';
+            exit;
+        }
+
         return $next($request);
     }
 }
