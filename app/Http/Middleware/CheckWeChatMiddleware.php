@@ -17,6 +17,7 @@ class CheckWeChatMiddleware
      */
     public function handle($request, Closure $next)
     {
+        Log::info($request);
         $signature = request('signature');
         $timestamp = request('timestamp');
         $nonce = request('nonce');
