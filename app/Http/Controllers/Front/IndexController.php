@@ -49,7 +49,7 @@ class IndexController extends Controller
      * 
      * @return        
      */
-    public function responseEvent($data){
+    protected function responseEvent($data){
         $returnData = [];
         switch (strtolower($data['Event'])) {
             /*订阅公众账号*/
