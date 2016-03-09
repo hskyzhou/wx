@@ -25,7 +25,7 @@ class IndexController extends Controller
      */
     public function index(Request $request){
         $xmlArr = $this->getData();
-        Log::info($xmlArr);
+
         switch (strtolower($xmlArr['MsgType'])) {
             case 'text':
                 # code...
@@ -74,7 +74,6 @@ class IndexController extends Controller
 
         $returnText = $this->setReturnText($returnData);
 
-        Log::info($returnText);
         echo $returnText;
         exit;
     }
@@ -91,7 +90,7 @@ class IndexController extends Controller
             </xml>
         ";
 
-        return sprintf($template, $data['FromUserName'], $data['ToUserName'], time(), $data['Content']);
+        return sprintf($template, $data['ToUserName'], $data['FromUserName'], time(), $data['Content']);
     }
 
     /**
