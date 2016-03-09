@@ -29,6 +29,8 @@ class CheckWeChatMiddleware
 
         $tmpString = implode($tmpArr);
         $tempString = sha1($tmpString);
+        Log::info($tempString);
+        Log::info($signature);
 
         if($tempString == $signature){
             if($echostr){
