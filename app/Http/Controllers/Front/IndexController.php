@@ -68,7 +68,10 @@ class IndexController extends Controller
                 # code...
                 break;
 
-            echo $this->setReturnText($returnData);
+            $returnText = $this->setReturnText($returnData);
+            \Log::info($returnText);
+            echo $returnText;
+            exit;
         }
     }
 
