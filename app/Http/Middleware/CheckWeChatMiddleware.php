@@ -32,12 +32,10 @@ class CheckWeChatMiddleware
 
         if($tempString == $signature){
             if($echostr){
-                Log::info($echostr);
                 echo $echostr;
                 exit;
             }
         }else{
-            Log::info('not equal');
             echo '';
             exit;
         }

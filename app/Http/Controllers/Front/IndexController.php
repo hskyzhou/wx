@@ -10,8 +10,18 @@ use SoapBox\Formatter\Formatter;
 
 use Log;
 
+use App\Services\Contracts\WxReceiveNormalContracts;
+use App\Services\Contracts\WxReceiveTextContracts;
+
 class IndexController extends Controller
 {
+    protected $wxReceNor;
+    protected $wxReceText;
+
+    public function __construct(WxReceiveNormalContracts $wxReceNor, WxReceiveTextContracts $wxReceText){
+        $this->wxReceNor = $wxReceNor;
+        $this->wxReceText = $wxReceText;
+    }
     /**
      * index  function
      * 
@@ -61,6 +71,7 @@ class IndexController extends Controller
                     'FromUserName' => $data['ToUserName'],
                     'Content' => trans('label.welcome.text'),
                 ];
+                $returnText = $this->wxReceNor->sendTextInfo($returnData);
                 break;
             
             /*取消订阅公众账号*/
@@ -72,25 +83,8 @@ class IndexController extends Controller
                 break;
         }
 
-        $returnText = $this->setReturnText($returnData);
-
         echo $returnText;
         exit;
-    }
-
-
-    protected function setReturnText($data){
-        $template = "
-            <xml>
-            <ToUserName><![CDATA[%s]]></ToUserName>
-            <FromUserName><![CDATA[%s]]></FromUserName>
-            <CreateTime>%s</CreateTime>
-            <MsgType><![CDATA[text]]></MsgType>
-            <Content><![CDATA[%s]]></Content>
-            </xml>
-        ";
-
-        return sprintf($template, $data['ToUserName'], $data['FromUserName'], time(), $data['Content']);
     }
 
     /**
@@ -104,7 +98,6 @@ class IndexController extends Controller
      * 
      * @return        
      */
-    
     protected function getData(){
         $returnData = [];
         $xmlData = file_get_contents("php://input");

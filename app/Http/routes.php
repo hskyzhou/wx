@@ -85,3 +85,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['auth', 'permission:login
 Route::group(['namespace' => 'Front', 'middleware' => 'check.wechat'], function($router){
     $router->match(['get', 'post'], '/', 'IndexController@index');
 });
+
+/*其他测试*/
+Route::group(['prefix' => 'test'], function($router){
+    $router->get('qrcode', 'QrcodeController@qrCode');
+});

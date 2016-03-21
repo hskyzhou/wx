@@ -152,6 +152,7 @@ return [
         Barryvdh\Debugbar\ServiceProvider::class,
         Arcanedev\LogViewer\LogViewerServiceProvider::class,//记录日志
         HieuLe\Active\ActiveServiceProvider::class, //Active类
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class,
 
         /*
          * Custom Party Service Provider
@@ -220,6 +221,7 @@ return [
          */
         'Debugbar' => Barryvdh\Debugbar\Facade::class,
         'Active' => HieuLe\Active\Facades\Active::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class,
 
         /**
          * custom party

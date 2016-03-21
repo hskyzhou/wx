@@ -23,9 +23,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('\App\Services\Contracts\SpecialContract', function()
-        {
-            return new \App\Services\SpecialService();
-        });
+        $this->app->singleton(\App\Services\Contracts\WxReceiveNormalContract::class, \App\Services\WxReceiveNormalService::class);
+        $this->app->singleton(\App\Services\Contracts\WxReceiveTextContract::class, \App\Services\WxReceiveTextService::class);
     }
 }
